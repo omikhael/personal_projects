@@ -1,0 +1,1472 @@
+%%[
+SET @user_language = [Language]
+SET @credit = [Auxiliary Variable 1]
+SET @member_id = [Auxiliary Variable 2]
+SET @srn = [SRN]
+SET @debug_mode = 0
+
+IF @debug_mode == 1 THEN 
+	SET @test_mode = CONCAT("[TEST AM5922 Reminder] ", @member_id, " - ")
+ENDIF
+
+SET @first_name = PROPERCASE(REPLACELIST([First Name], "", "<", ">", "|", "&", ";"))
+IF EMPTY(@first_name) THEN
+    SET @first_name = "Hi customer,"
+ELSE
+    SET @first_name = CONCAT("Hi ", @first_name, ",")
+ENDIF
+
+IF UPPERCASE(@user_language) == 'F' OR UPPERCASE(@user_language) == 'FR' THEN
+  SET @unsub_link = [Unsubscribe Link in French]
+  SET @sc_link = [Subscription Center Link in French]
+  SET @subject_line = "Hâtez-vous! Cette offre de carte de credit préautorisée prend fin le 31 août"
+  SET @web_version_text = "Voir&nbsp;en&nbsp;ligne"
+  SET @preheader = "Rappel : Vous êtes admissible à une carte préautorisée."
+  SET @credit = Format(@credit,"# ### ###")
+  
+  IF @member_id == "1353001" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/principal/particuliers/cartes-de-credit/airmiles/offre?cards_mid=3730104&ecid=em-FEAT171CC4-EYBMO33' 
+  ELSEIF @member_id == "1353006" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/principal/particuliers/cartes-de-credit/airmiles/offre?cards_mid=3730108&ecid=em-FEAT171CC4-EYBMO38'
+  ELSEIF @member_id == "1353008" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/principal/particuliers/cartes-de-credit/airmiles/offre?cards_mid=3730110&ecid=em-FEAT171CC4-EYBMO40' 
+  ELSEIF @member_id == "1353013" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/principal/particuliers/cartes-de-credit/airmiles/offre?cards_mid=3730114&ecid=em-FEAT171CC4-EYBMO45'  
+  ELSEIF @member_id == "1353019" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/principal/particuliers/cartes-de-credit/airmiles/offre?cards_mid=3730119&ecid=em-FEAT171CC4-EYBMO51'
+  ENDIF
+  
+ELSE
+  SET @unsub_link = [Unsubscribe Link in English]
+  SET @sc_link = [Subscription Center Link in English]
+  SET @subject_line = "Hurry, your pre-approved credit card offer ends August 31"
+  SET @web_version_text = "View&nbsp;online"
+  SET @preheader = "Reminder: You’re pre-approved."
+  SET @credit = Format(@credit,"#,#")
+  
+  IF @member_id == "1353001" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/main/personal/credit-cards/airmiles/offer?cards_mid=3730104&ecid=em-FEAT171CC4-EYBMO14' 
+  ELSEIF @member_id == "1353006" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/main/personal/credit-cards/airmiles/offer?cards_mid=3730108&ecid=em-FEAT171CC4-EYBMO19' 
+  ELSEIF @member_id == "1353008" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/main/personal/credit-cards/airmiles/offer?cards_mid=3730110&ecid=em-FEAT171CC4-EYBMO21' 
+  ELSEIF @member_id == "1353013" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/main/personal/credit-cards/airmiles/offer?cards_mid=3730114&ecid=em-FEAT171CC4-EYBMO26'  
+  ELSEIF @member_id == "1353019" THEN
+  	SET @accept_now_link = 'https://www.bmo.com/main/personal/credit-cards/airmiles/offer?cards_mid=3730119&ecid=em-FEAT171CC4-EYBMO32'
+  ENDIF
+    
+ENDIF
+
+SET @timestamp = NOW()
+
+]%%
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="http://pages.e-news.bmo.com/fonts-nov2015" rel="stylesheet" type="text/css" />
+<style type="text/css">
+div, p, a, li, td, * {
+	-webkit-text-size-adjust: none;
+}
+.ExternalClass {
+	line-height: 120% !important;
+}
+.ExternalClass * {
+	line-height: 120% !important;
+}
+div.preheader { 
+	display:none !important; 
+}
+.body a {
+	text-decoration: none;
+	color: #414141;
+}
+.black a {
+	text-decoration: none;
+	color: #000000;
+}
+.blue a {
+	text-decoration: none;
+	color: #0079c1;
+}
+.dark-grey a {
+	text-decoration: none;
+	color: #2d2d2d;
+}
+.grey, .footer a {
+	text-decoration: none;
+	color: #898989;
+}
+.light-grey a {
+	text-decoration: none;
+	color: #e6e6e6;
+}
+.header-bar a {
+	text-decoration: none;
+	color: #83c2e8;
+}
+.white a {
+	text-decoration: none;
+	color: #ffffff;
+}
+ @media only screen and (max-width: 620px) {
+/* General */	 
+table[class~=full-width] {
+	width: 100% !important;
+}
+img[class~=full-width] {
+	width: 100% !important;
+	padding: 0 !important;
+	height: auto !important;
+}
+td[class~=full-width] {
+	width: 100% !important;
+}
+td[class~=mostly-full-width] {
+	width: 90% !important;
+	min-width: 90% !important;
+}
+td[class~=mobile-height-auto] {
+	height: auto !important;
+}
+hr[class~=horizontal-rule] {
+	width: 100% !important;
+}
+td[class~=mobile-padding] {
+	width: 5% !important;
+}
+td[class~=mobile-padding] img {
+	width: 100% !important;
+}
+table[class~=mobile-hidden], tr[class~=mobile-hidden], td[class~=mobile-hidden], span[class~=mobile-hidden], br[class~=mobile-hidden] {
+	display: none !important;
+}
+tr[class~=mobile-hidden] td {
+	display: none !important;
+}
+tr[class~=mobile] {
+	display: table-row !important;
+}
+td[class~=mobile] {
+	display: table-cell !important;
+}
+div[class~=mobile] {
+	display: block !important;
+	height: auto !important;
+	max-height: none !important;
+	overflow: visible !important;
+	float: none !important;
+}
+img[class~=centered] {
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+td[class~=text-align-left] {
+	text-align: left !important;
+}
+td[class~=text-align-center] {
+	text-align: center !important;
+}
+table[class~=table-align-center] {
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+span[class~=mobile-break] {
+	display: block !important;
+}
+img[class~=mobile-icon-caret-lg] {
+	display: block !important;
+	width: 30px !important;
+	height: 30px !important;
+}
+td[class~=mobile-border-none] {
+	border: none !important;
+}
+td[class~=padding-top-0] {
+	padding-top: 0px !important;
+}
+td[class~=mobile-logo-padding] {
+    padding-top: 13px !important;
+    padding-bottom: 13px !important;
+}
+a[class~=mobile-btn-middle] {
+	display:inline-block !important; 
+	width:100% !important;
+	line-height:46px !important;
+}
+a[class~=mobile-btn-edge] {
+	display:inline-block !important;
+}
+
+/* Header - View online and Logo */
+img[class~=mobile-view-online-header] {
+	height:17px !important;
+}
+td[class~=mobile-view-online-header-padding] {
+	padding-top: 0px !important;
+	padding-bottom: 0px !important;
+}
+td[class~=mobile-view-online-footer-padding] {
+	padding-top: 0px !important;
+	padding-bottom: 28px !important;
+}
+img[class~=mobile-logo] {
+	display: block !important;
+	width: 97px !important;
+	height: 37px !important;
+	padding-right: 20px !important;
+}
+td[class~=mobile-logo-padding] {
+	padding-top: 13px !important;
+	padding-bottom: 13px !important;
+}
+
+/* Hero */
+td[class~=mobile-hero-red-img-holder] {
+	width: 124px !important;
+}
+img[class~=mobile-hero-red] {
+	display: block !important;
+	width: 162px !important;
+	height: 169px !important;
+}
+td[class~=mobile-hero-white-img-holder] {
+	width: 136px !important;
+}
+img[class~=mobile-hero-white] {
+	display: block !important;
+	width: 136px !important;
+	height: 136px !important;
+}
+td[class~=mobile-hero-blue-img-holder] {
+	width: 127px !important;
+}
+img[class~=mobile-hero-blue] {
+	display: block !important;
+	width: 127px !important;
+	height: 135px !important;
+}
+td[class~=mobile-hero-bokeh-img-holder] {
+	width: 126px !important;
+}
+img[class~=mobile-hero-bokeh] {
+	display: block !important;
+	width: 126px !important;
+	height: 134px !important;
+}
+table[class~=mobile-l-hero-white-large] {
+	width: 100% !important;
+}
+table[class~=mobile-r-hero-white-large] {
+	width: 100% !important;
+}
+td[class~=mobile-hero-large-content-padding] {
+	padding-top:43px !important;
+	padding-bottom:50px !important;
+}
+td[class~=mobile-hero-over-image] {
+	width: auto !important;
+	height:auto !important;
+	background:none !important;
+}
+img[class~=mobile-hero-over-image-img] {
+	width: 100% !important;
+	height:auto !important;
+	display:block !important;
+}
+td[class~=mobile-hero-over-image-btn-padding] {
+	padding-top: 40px !important;
+}
+
+/* Content - Circle image/C-text */
+td[class~=mobile-c-image-padding] {
+	padding-top: 0px !important;
+	padding-bottom: 35px !important;
+}
+img[class~=mobile-c-circle-image] {
+	width: 119px !important;
+	height:119px !important;
+	display:block !important;
+}
+img[class~=mobile-c-image] {
+	width: 100% !important;
+	height:auto !important;
+	display:block !important;
+}
+td[class~=mobile-c-text-cta-padding] {
+	padding-top: 25px !important;
+	padding-bottom: 0px !important;
+}
+td[class~=mobile-c-text-padding] {
+	padding-top: 36px !important;
+	padding-bottom: 40px !important;
+}
+
+/* Content - C-text - 2-col */
+td[class~=mobile-c-text-l-col-padding] {
+	padding-bottom: 37px !important;
+}
+
+td[class~=mobile-hero-img-bottom-padding] {
+	padding-bottom: 40px !important;
+}
+
+/* Content - C-features */
+table[class~=steps-call-out-width] {
+	width: 80% !important;
+}
+td[class~=steps-call-out-holder] {
+	padding-top: 6px !important;
+}
+td[class~=steps-call-out] {
+	padding-top: 8px !important;
+	font-size: 15px !important;
+}
+table[class~=mobile-l-3-col-c-features] {
+	width: 100% !important;
+	padding-bottom: 36px !important;
+}
+table[class~=mobile-r-3-col-c-features] {
+	width: 100% !important;
+	padding-bottom: 0px !important;
+}
+
+/* Content - C-plans */
+table[class~=mobile-l-3-col-c-plans] {
+	width: 100% !important;
+	padding-bottom: 25px !important;
+}
+table[class~=mobile-r-3-col-c-plans] {
+	width: 100% !important;
+}
+td[class~=mobile-3-col-padding] {
+	padding-bottom:30px !important;
+}
+
+/* Content - H1 icons - H2 icons - Interactive icons */
+table[class~=mobile-l-3-col-icons] {
+	width: 100% !important;
+}
+table[class~=mobile-r-3-col-icons] {
+	width: 100% !important;
+}
+td[class~=mobile-3-icons-padding] {
+	padding-bottom:32px !important;
+}
+table[class~=mobile-l-2-col-icons] {
+	width: 100% !important;
+	padding-bottom: 0px !important;
+}
+table[class~=mobile-r-2-col-icons] {
+	width: 100% !important;
+}
+td[class~=mobile-2-icons-padding] {
+	padding-bottom:37px !important;
+}
+table[class~=mobile-l-3-col-icons-2] {
+	width:25% !important;
+	text-align:left !important;
+}
+table[class~=mobile-l-3-col-icons-2] td {
+	padding-bottom:0px !important;
+	text-align:left !important;
+}
+table[class~=mobile-l-3-col-copy] {
+	width:75% !important;
+}
+td[class~=mobile-l-3-col-copy-holder] {
+	padding-left:20px !important;
+	padding-top:0px !important;
+	padding-bottom:0px !important;
+}
+td[class~=mobile-l-3-col-copy-content] {
+	width:auto !important;
+}
+
+/* Content - C-Events/CTA */
+img[class~=mobile-invite-map-image] {
+	width: 100% !important;
+	height:auto !important;
+	display:block !important;
+}
+table[class~=mobile-l-2-col-events-cta] {
+	width: 100% !important;
+	padding-bottom: 0px !important;
+}
+table[class~=mobile-r-2-col-events-cta] {
+	width: 100% !important;
+}
+td[class~=mobile-l-2-col-events-cta-padding] {
+	padding-left: 5% !important;
+}
+td[class~=mobile-c-events-cta-link] {
+	font-size: 15px !important;
+	padding-top:0px !important;
+	padding-bottom:36px !important;
+	font-family:'dax',Arial,Helvetica,sans-serif !important;
+}
+
+/*Content - 3 links */
+table[class~=mobile-l-3-col-c-links] {
+	width: 100% !important;
+	padding-bottom: 0px !important;
+}
+
+/* Optional Footer and Footer - General */
+span[class~=mobile-footer-break] {
+	display: block !important;
+	padding-bottom: 23px !important;
+}
+td[class~=mobile-opt-footer-padding-0] {
+	padding-bottom:0px !important;
+}
+
+/* Optional Footer - Representatives */
+table[class~=mobile-l-col-optional-footer-rep] {
+	width:100% !important;
+}
+table[class~=mobile-r-col-optional-footer-rep] {
+	width:100% !important;
+}
+table[class~=mobile-opt-footer-rep-image] {
+	width:42px !important;
+}
+table[class~=mobile-opt-footer-rep-image] td {
+	padding-bottom:0px !important;
+}
+table[class~=mobile-opt-footer-rep-copy] {
+	width:auto !important;
+}
+td[class~=mobile-opt-footer-3-col-rep-copy-holder] {
+	padding-left:20px !important;
+	padding-top:0px !important;
+	padding-bottom:0px !important;
+}
+td[class~=mobile-optional-footer-rep-padding] {
+	padding-bottom:26px !important;
+}
+
+/* Optional Footer - Carets */
+table[class~=mobile-l-col-optional-footer-caret] {
+	width:100% !important;
+}
+table[class~=mobile-r-col-optional-footer-caret] {
+	width:100% !important;
+}
+table[class~=mobile-opt-footer-caret-image] {
+	width:14px !important;
+}
+table[class~=mobile-opt-footer-copy-caret-en] {
+	/*width:auto !important;*/
+	width:80% !important;
+}
+table[class~=mobile-opt-footer-copy-caret-fr] {
+	/*width:auto !important;*/
+	width:65% !important;
+}
+td[class~=mobile-opt-footer-3-col-caret-copy-holder] {
+	padding-right:8px !important;
+	padding-top:0px !important;
+	padding-bottom:0px !important;
+}
+td[class~=mobile-optional-footer-rep-padding] {
+	padding-bottom:23px !important;
+}
+td[class~=mobile-opt-footer-3-col-caret-height] {
+	padding-top:2px !important;
+	padding-bottom:0px !important;
+}
+
+/* Optional Footer - MasterCard */
+table[class~=mobile-l-col-optional-footer-mc] {
+	width:100% !important;
+}
+table[class~=mobile-r-col-optional-footer-mc] {
+	width:100% !important;
+}
+td[class~=mobile-optional-footer-mc-padding] {
+	padding-bottom:26px !important;
+}
+
+/* Optional Footer - Get more */
+td[class~=mobile-opt-footer-get-more] {
+	padding-bottom: 0px !important;
+}
+td[class~=mobile-opt-footer-get-more-0] {
+	padding-bottom: 0px !important;
+}
+td[class~=mobile-footer-nav] {
+	padding-bottom: 3px !important;
+}
+td[class~=mobile-footer-social-nav] {
+	padding-bottom: 30px !important;
+}
+td[class~=medium-hero-keyhole] {
+	font-size: 25px !important;
+}
+}
+ @media only screen and (max-width: 430px) {
+/* General */
+td[class~=big] {
+	font-size: 40px !important;
+}
+td[class~=medium] {
+	font-size: 32px !important;
+}
+td[class~=medium-hero-keyhole] {
+	font-size: 22px !important;
+}
+td[class~=small] {
+	font-size: 24px !important;
+}
+sup[class~=mobile-sup-small] {
+	font-size: 15px !important;
+	vertical-align: 21px !important;
+}
+sup[class~=mobile-sup-small] {
+	font-size: 15px !important;
+	vertical-align: 8px !important;
+}
+
+/* Grey keyline with notch */
+td[class~=mobile-keyline-notch-width] {
+	width: 47% !important;
+}
+td[class~=mobile-keyline-notch-width] {
+	width: 6% !important;
+}
+}
+@media only screen and (max-width: 390px) {
+[style*="dax"] {
+ font-family: 'dax', Arial, Helvetica, sans-serif;
+}
+}
+</style>
+
+<!-- Outlook font fix - Start -->
+<!--[if mso]>
+
+<style>
+    [style*="dax"] {
+      font-family: Arial, Helvetica, san-serif !important;
+    }
+    td, a, span {
+      font-family: Arial, Helvetica, san-serif !important;
+     }
+</style>
+
+<![endif]-->
+<!-- Outlook font fix - End -->
+
+<!--[if gte mso 9]><xml>
+	<o:OfficeDocumentSettings>
+ 	<o:AllowPNG/>
+ 	<o:PixelsPerInch>96</o:PixelsPerInch>
+ 	</o:OfficeDocumentSettings>
+</xml><![endif]-->
+</head>
+<body bgcolor="#ffffff" style="margin:0; padding:0; min-width:100%;">
+<!-- Pre-header copy - Start -->
+<div class="preheader" style="font-size: 1px; display: none !important;">%%= v(@preheader) =%%</div>
+<!-- Pre-header copy - End -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+<!-- Blue bar - Web Version - Start -->
+<tr>
+<td valign="top">
+<table width="100%" bgcolor="#0079c1" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">        
+        <tr>
+          <td valign="top"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" class="mobile-view-online-header" /></td>
+                <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                             <td align="right" valign="top" style="font-size:11px; color:#83c2e8; font-family:Arial, Helvetica, sans-serif; padding-top:2px; padding-bottom:2px; line-height:1.2em; mso-line-height-alt:0.6em;" class="header-bar mobile-view-online-header-padding">
+                             <!-- View online - English (Desktop only) - Mobile link is in the footer - Start -->
+                             <span style="line-height:1.2em; mso-line-height-alt:0.6em;" class="mobile-hidden">
+                             <a target="_blank" href="%%view_email_url%%" style="line-height:1.2em; mso-line-height-alt:0.6em; color:#83c2e8; text-decoration:none;" alias="header-view-online">%%= v(@web_version_text) =%%</a></span>
+                             <!-- View online - English (Desktop only) - Mobile link is in the footer - End -->
+                             </td>
+                          </tr>
+                  </table></td>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" class="mobile-view-online-header" /></td>
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Blue bar -  Web Version - End -->
+
+%%[ IF UPPERCASE(@user_language) == 'F' OR UPPERCASE(@user_language) == 'FR' THEN ]%%
+
+<!-- Header - BMO - French - Start -->
+<tr>
+<td valign="top"> 
+<table width="100%" bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center" style="border-bottom:1px solid #e6e6e6;"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                      <td valign="top" style="padding-top:19px; padding-bottom:22px;" class="mobile-logo-padding"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                          <tr>
+                          <!-- Logo (Mobile only) - Start --> 
+                            <!--[if !mso]><!--><td valign="middle" align="left" style="display:none; font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif;" class="mobile"><div class="mobile" style="height:0; max-height: 0; overflow:hidden;"><a href="http://www.bmo.com/principal/particuliers" target="_blank" style="font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" alias="header-logo-mobile"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/logo-bmo-fr-mobile-5922-06-28-2016.gif" alt="" width="0" height="0" border="0" style="display:none; font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" class="mobile-logo" /></a></div></td><!--<![endif]-->
+                            <!-- Logo (Mobile only) - End -->
+                            <!-- Logo (Desktop only) - Mobile image is above - Start -->
+                            <td width="265" class="body mobile-hidden" valign="middle" align="left" style="font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:0px;"><a href="http://www.bmo.com/principal/particuliers" target="_blank" style="font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" alias="header-logo"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/logo-bmo-fr-5922-06-28-2016.gif" alt="BMO &ndash; Ici, pour vous." width="255" height="50" border="0" style="display:block; font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" /></a></td>
+                            <!-- Logo (Desktop only) - Mobile image is above - End -->
+                            <td width="295" class="grey" valign="middle" align="right" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; line-height:1.2em; mso-line-height-alt:0.6em;"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table></td>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Header - BMO - French - End -->
+
+%%[ ELSE ]%%
+
+<!-- Header - BMO - English - Start -->
+<tr>
+<td valign="top"> 
+<table width="100%" bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center" style="border-bottom:1px solid #e6e6e6;"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                      <td valign="top" style="padding-top:19px; padding-bottom:22px;" class="mobile-logo-padding"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                          <tr> 
+                          	<!-- Logo (Mobile only) - Start -->
+                            <!--[if !mso]><!--><td valign="middle" align="left" style="display:none; font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif;" class="mobile"><div class="mobile" style="height:0; max-height: 0; overflow:hidden;"><a href="http://www.bmo.com/main/personal" target="_blank" style="font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" alias="header-logo-mobile"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/logo-bmo-mobile-5922-06-28-2016.gif" alt="" width="0" height="0" border="0" style="display:none; font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" class="mobile-logo" /></a></div></td><!--<![endif]-->
+                            <!-- Logo (Mobile only) - End -->
+                            <!-- Logo (Desktop only) - Mobile image is above - Start -->
+                            <td width="239" class="body mobile-hidden" valign="middle" align="left" style="font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:0px;"><a href="http://www.bmo.com/main/personal" target="_blank" style="font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" alias="header-logo"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/logo-bmo-5922-06-28-2016.gif" alt="BMO &ndash; We&rsquo;re here to help." width="229" height="50" border="0" style="display:block; font-size:15px; color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" /></a></td>
+                            <!-- Logo (Desktop only) - Mobile image is above - End -->
+                            <td width="321" class="grey" valign="middle" align="right" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; line-height:1.2em; mso-line-height-alt:0.6em;"></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                  </table></td>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Header - BMO - English - End -->
+
+%%[ ENDIF ]%%
+
+%%[ IF UPPERCASE(@user_language) == 'F' OR UPPERCASE(@user_language) == 'FR' THEN ]%%
+
+<!-- Hero - H-Red keyhole - Image right - Start -->
+<tr>
+<td valign="top">
+<table width="100%" bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top" style="padding-top:40px; padding-bottom:30px;"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <!-- Content - Text/CTA - Start -->
+              <tr>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                  <tr>
+                   <td valign="top"><table class="full-width" width="280" border="0" cellpadding="0" cellspacing="0" align="left">
+                      <tr>
+                         <td valign="top" align="left" class="dark-grey small" style="font-size:28px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:11px; font-weight:300; line-height:1.2em;">Rappel&nbsp;: Vous &ecirc;tes admissible &agrave; une 
+                         <span style="line-height:1.2em; white-space: nowrap;">carte&nbsp;pr&eacute;autoris&eacute;e&sup1;.</span></td>
+                      </tr>                        
+                      <tr>
+                         <td valign="top" align="left" class="dark-grey" style="font-size:16px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:12px; line-height:1.2em;">Ne ratez pas la chance d&rsquo;obtenir jusqu&rsquo;&agrave; 200 
+                         <span style="line-height:1.2em; white-space: nowrap;">AIR&nbsp;MILES<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">md</sup></span> 
+                         en 
+                         <span style="line-height:1.2em; white-space: nowrap;">prime<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">3</sup></span> 
+                         <span style="line-height:1.2em; font-weight:normal;">lorsque vous acceptez cette offre d&rsquo;ici le&nbsp;31&nbsp;ao&ucirc;t&nbsp;2016.</span></td>
+                      </tr>                          
+                      <tr>
+                         <td valign="top" align="left" class="dark-grey" style="font-size:16px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em;">Limite de cr&eacute;dit&nbsp;: %%= v(@credit) =%%&nbsp;$</td>
+                      </tr>                       
+                      <tr>
+                        <td valign="top" align="left" style="padding-top:30px; padding-bottom:0px;">
+                          <!-- Button - Left, middle, and right links require identical URLs - Start -->
+                          <table cellpadding="0" cellspacing="0" border="0" class="table-align-center full-width">
+                            <tr>
+                              <td width="21" valign="middle" align="right" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block;" target="_blank" alias="accept-now"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/btn-left-blue-gif-5922-06-28-2016.gif" width="21" height="46" alt="" border="0" style="display:block;" /></a></td>
+                              <td valign="middle" height="46" align="center" style="background-color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:block;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block; width:100%; line-height:46px !important;" target="_blank" alias="accept-now">Accepter&nbsp;maintenant</a></td>
+                              <td width="21" valign="middle" align="left" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block;" target="_blank" alias="accept-now"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/btn-right-blue-gif-5922-06-28-2016.gif" width="21" height="46" border="0" alt="" style="display:block;" /></a></td>
+                            </tr>
+                          </table>
+                          <!-- Button - Left, middle, and right links require identical URLs - End -->
+                        </td>
+                       </tr>     
+                     </table>
+                     <!-- Fixes alignment in Outlook 2007, 2010, and 2013. Ensure align and width values match in table directly under conditional statement -->
+                                    <!--[if gte mso 9]>
+                                </td>
+                                <td align="left" valign="top">
+                        <![endif]-->
+                     <table width="235" border="0" cellpadding="0" cellspacing="0" class="full-width" align="right">
+                      <tr>
+                         <td valign="top" align="center" class="dark-grey mobile-hero-over-image-btn-padding" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:0px; line-height:1.2em;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/img-card-AM-fr-02-5922-06-28-2016.jpg" alt="" width="235" height="148" border="0" style="display:block; font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" /></td>
+                      </tr>
+                    </table></td>
+                    </tr>                    
+                  </table></td>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+              </tr>
+              <!-- Content - Text/CTA - End -->
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Hero - H-Red keyhole - Image right - End -->
+<!-- Content - Start -->
+<tr>
+<td valign="top">
+<table width="100%" bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top" style="padding-top:40px; padding-bottom:40px; border-top: 1px solid #e6e6e6"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <!-- Content - Text/CTA - Start -->
+              <tr>
+                <td valign="top"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                    <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                      <tr>
+                       <td valign="top"><table class="full-width" width="240" border="0" cellpadding="0" cellspacing="0" align="left">
+                        <tr>
+                          <td class="body" valign="top" align="left" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:40px; line-height:1.2em;">Bonjour,</td>
+                        </tr>
+                        <tr>
+                           <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:11px; line-height:1.2em;">Nous sommes heureux de vous annoncer que vous &ecirc;tes 
+                           <span style="line-height:1.2em; white-space: nowrap;">admissible<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">1</sup></span> 
+                           &agrave; une carte 
+                           <span style="line-height:1.2em; white-space: nowrap;">MasterCard<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">MD</sup>*&nbsp;BMO</span> 
+                           <span style="line-height:1.2em; white-space: nowrap;">AIR&nbsp;MILES<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">md&dagger;</sup>,</span> 
+                           ce qui vous permet d&rsquo;accumuler des milles de r&eacute;compense AIR&nbsp;MILES pour chaque dollar d&rsquo;achat r&eacute;gl&eacute; avec 
+                           <span style="line-height:1.2em; white-space: nowrap;">la&nbsp;carte<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">2</sup>.</span></td>
+                        </tr>                        
+                        <tr>
+                           <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:0px; line-height:1.2em;">H&acirc;tez-vous! Acceptez cette offre d&rsquo;ici le 31&nbsp;ao&ucirc;t&nbsp;2016 et obtenez 200 milles en prime et le double des milles pendant les six 
+                           <span style="line-height:1.2em; white-space: nowrap;">premiers&nbsp;mois<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">3</sup>.</span></td>
+                        </tr>                        
+                        <tr>
+                          <td valign="top" align="left" style="padding-top:30px; padding-bottom:30px;">
+                          <!-- Button - Left, middle, and right links require identical URLs - Start -->
+                            <table cellpadding="0" cellspacing="0" border="0" class="table-align-center full-width">
+                              <tr>
+                                <td width="21" valign="middle" align="right" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block;" target="_blank" alias="accept-now"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/btn-left-blue-gif-5922-06-28-2016.gif" width="21" height="46" alt="" border="0" style="display:block;" /></a></td>
+                                <td valign="middle" height="46" align="center" style="background-color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:block;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block; width:100%; line-height:46px !important;" target="_blank" alias="accept-now">Accepter&nbsp;maintenant</a></td>
+                                <td width="21" valign="middle" align="left" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block;" target="_blank" alias="accept-now"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/btn-right-blue-gif-5922-06-28-2016.gif" width="21" height="46" border="0" alt="" style="display:block;" /></a></td>
+                                </tr>
+                              </table>
+                            <!-- Button - Left, middle, and right links require identical URLs - End -->
+                            </td>
+                           </tr>
+                           <tr>
+                             <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:40px; line-height:1.2em;">Composez le 
+                             <span style="line-height:1.2em; white-space: nowrap;">1-866-496-2219</span> 
+                             ou passez &agrave; votre <span style="line-height:1.2em; white-space: nowrap;"><a href="http://locator.bmo.com/Default.aspx?t=bb&lang=fr" target="_blank" style="color:#0079c1; text-decoration:none; line-height:1.2em;" alias="">succursale de&nbsp;BMO</a>.</span></td>
+                          </tr>      
+                         </table>
+                         <!-- Fixes alignment in Outlook 2007, 2010, and 2013. Ensure align and width values match in table directly under conditional statement -->
+                                    <!--[if gte mso 9]>
+                                </td>
+                                <td align="left" valign="top" width="285">
+                        <![endif]-->
+                          <table bgcolor="#f2f2f0" class="full-width" width="285" border="0" cellpadding="0" cellspacing="0" align="right">
+                          <tr>
+                          	<td class="mobile-padding" width="20" valign="bottom" style="padding-top:25px; padding-bottom:25px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                            <td valign="top" align="left" style="padding-top:25px; padding-bottom:25px;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                   <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:11px; line-height:1.2em;">Profitez des avantages ci-dessous et d&rsquo;autres encore gr&acirc;ce &agrave; votre carte MasterCard BMO AIR&nbsp;MILES&nbsp;:</td>
+                                </tr> 
+                                <tr>
+                                   <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:13px; line-height:1.2em;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/img-card-AM-fr-02-5922-06-28-2016.jpg" alt="" width="131" height="81" border="0" style="display:block; font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" /></td>
+                                </tr>                               
+                                <tr>
+                                  <td valign="top" align="left" style="padding-top:0px; padding-bottom:0px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="left">
+                                    <tr>
+                                      <td width="13" valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">&bull;</td>
+                                      <td valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">Aucuns frais 
+                                      <span style="line-height:1.2em; white-space: nowrap;">annuels<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">4</sup></span></td>
+                                    </tr>
+                                    <tr>
+                                      <td width="13" valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">&bull;</td>
+                                      <td valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">Obtenez 200&nbsp;milles en prime apr&egrave;s le premier achat r&eacute;gl&eacute; avec 
+                                      <span style="line-height:1.2em; white-space: nowrap;">la&nbsp;carte<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">3</sup></span></td>
+                                    </tr>
+                                    <tr>
+                                      <td width="13" valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">&bull;</td>
+                                      <td valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">2&nbsp;milles de r&eacute;compense pour chaque tranche de 
+                                      <span style="line-height:1.2em; white-space: nowrap;">20&nbsp;$</span> 
+                                      d&rsquo;achats durant les six premiers 
+                                      <span style="line-height:1.2em; white-space: nowrap;">mois<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">3</sup></span> 
+                                      et 1&nbsp;mille de r&eacute;compense par tranche de 
+                                      <span style="line-height:1.2em; white-space: nowrap;">20&nbsp;$</span> 
+                                      par 
+                                      <span style="line-height:1.2em; white-space: nowrap;">la&nbsp;suite<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">2</sup></span></td>
+                                    </tr>
+                                    <tr>
+                                      <td width="13" valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">&bull;</td>
+                                      <td valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">Accumulez le double des milles de r&eacute;compense chez les partenaires AIR&nbsp;MILES participants lorsque vous utilisez votre carte MasterCard BMO AIR&nbsp;MILES et pr&eacute;sentez votre carte d&rsquo;adh&eacute;rent AIR&nbsp;MILES</td>
+                                    </tr>
+                                  </table></td>
+                                </tr>
+                             </table></td>
+                             <td class="mobile-padding" width="20" valign="bottom" style="padding-top:25px; padding-bottom:25px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                          </tr>                          
+                          </table></td>
+                        </tr>                    
+                      </table></td>
+                    <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                  </tr>
+                </table></td>
+              </tr>
+              <!-- Content - Text/CTA - End -->
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Content - End -->
+
+%%[ ELSE ]%%
+
+<!-- Hero - H-Red keyhole - Image right - Start -->
+<tr>
+<td valign="top">
+<table width="100%" bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top" style="padding-top:40px; padding-bottom:30px;"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <!-- Content - Text/CTA - Start -->
+              <tr>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                  <tr>
+                   <td valign="top"><table class="full-width" width="280" border="0" cellpadding="0" cellspacing="0" align="left">
+                      <tr>
+                         <td valign="top" align="left" class="dark-grey small" style="font-size:29px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:11px; font-weight:300; line-height:1.2em;">Reminder: You&rsquo;re 
+                         <span style="line-height:1.2em; white-space: nowrap;">pre-approved.&sup1;</span></td>
+                      </tr>                        
+                      <tr>
+                         <td valign="top" align="left" class="dark-grey" style="font-size:16px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:12px; line-height:1.2em;">
+                         <span style="line-height:1.2em; font-weight:normal;">Don&rsquo;t miss your chance to</span> 
+                         get 200&nbsp;Bonus 
+                         <span style="line-height:1.2em; white-space: nowrap;">Miles,<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">3</sup></span> 
+                         plus&nbsp;2X the Miles for the first 
+                         <span style="line-height:1.2em; white-space: nowrap;">six&nbsp;months<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">3</sup></span> 
+                         <span style="line-height:1.2em; font-weight:normal;">when you accept this offer by 
+                         <span style="line-height:1.2em; white-space: nowrap;">August&nbsp;31,&nbsp;2016.</span></span></td>
+                      </tr>   
+                      <tr>
+                         <td valign="top" align="left" class="dark-grey" style="font-size:16px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em;">Credit limit: $%%= v(@credit) =%%</td>
+                      </tr>                     
+                      <tr>
+                        <td valign="top" align="left" style="padding-top:30px; padding-bottom:0px;">
+                          <!-- Button - Left, middle, and right links require identical URLs - Start -->
+                          <table cellpadding="0" cellspacing="0" border="0" class="table-align-center full-width">
+                            <tr>
+                              <td width="21" valign="middle" align="right" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block;" target="_blank" alias="accept-now"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/btn-left-blue-gif-5922-06-28-2016.gif" width="21" height="46" alt="" border="0" style="display:block;" /></a></td>
+                              <td valign="middle" height="46" align="center" style="background-color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:block;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block; width:100%; line-height:46px !important;" target="_blank" alias="accept-now">Accept&nbsp;now</a></td>
+                              <td width="21" valign="middle" align="left" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block;" target="_blank" alias="accept-now"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/btn-right-blue-gif-5922-06-28-2016.gif" width="21" height="46" border="0" alt="" style="display:block;" /></a></td>
+                            </tr>
+                          </table>
+                          <!-- Button - Left, middle, and right links require identical URLs - End -->
+                        </td>
+                       </tr>     
+                     </table>
+                     <!-- Fixes alignment in Outlook 2007, 2010, and 2013. Ensure align and width values match in table directly under conditional statement -->
+                                    <!--[if gte mso 9]>
+                                </td>
+                                <td align="left" valign="top">
+                        <![endif]-->
+                     <table width="235" border="0" cellpadding="0" cellspacing="0" class="full-width" align="right">
+                      <tr>
+                         <td valign="top" align="center" class="dark-grey mobile-hero-over-image-btn-padding" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:0px; line-height:1.2em;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/img-card-AM-en-03-5922-06-28-2016.jpg" alt="" width="235" height="148" border="0" style="display:block; font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" /></td>
+                      </tr>
+                    </table></td>
+                    </tr>                    
+                  </table></td>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+              </tr>
+              <!-- Content - Text/CTA - End -->
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Hero - H-Red keyhole - Image right - End -->
+<!-- Content - Start -->
+<tr>
+<td valign="top">
+<table width="100%" bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top" style="padding-top:40px; padding-bottom:40px; border-top: 1px solid #e6e6e6"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <!-- Content - Text/CTA - Start -->
+              <tr>
+                <td valign="top"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                    <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                      <tr>
+                       <td valign="top"><table class="full-width" width="240" border="0" cellpadding="0" cellspacing="0" align="left">
+                        <tr>
+                          <td class="body" valign="top" align="left" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:40px; line-height:1.2em;">%%= v(@first_name) =%%</td>
+                        </tr>
+                        <tr>
+                           <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:11px; line-height:1.2em;">We are pleased to tell you that you&rsquo;ve been 
+                           <span style="line-height:1.2em; white-space: nowrap;">pre-approved<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">1</sup></span> 
+                           for a BMO 
+                           <span style="line-height:1.2em; white-space: nowrap;">AIR&nbsp;MILES<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">&reg;&dagger;</sup></span> 
+                           <span style="line-height:1.2em; white-space: nowrap;">MasterCard<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">&reg;</sup>*</span> 
+                           &ndash; which lets you earn AIR&nbsp;MILES Reward&nbsp;Miles on every dollar 
+                           <span style="line-height:1.2em; white-space: nowrap;">you&nbsp;spend.<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">2</sup></span></td>
+                        </tr>                        
+                        <tr>
+                           <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:0px; line-height:1.2em;">Hurry! Accept your offer by 
+                           <span style="line-height:1.2em; white-space: nowrap;">August&nbsp;31,&nbsp;2016</span> 
+                           and get 200&nbsp;Bonus Miles and double the Miles for the first 
+                           <span style="line-height:1.2em; white-space: nowrap;">six&nbsp;months.<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">3</sup></span></td>
+                        </tr>                        
+                        <tr>
+                          <td valign="top" align="left" style="padding-top:30px; padding-bottom:30px;">
+                          <!-- Button - Left, middle, and right links require identical URLs - Start -->
+                            <table cellpadding="0" cellspacing="0" border="0" class="table-align-center full-width">
+                              <tr>
+                                <td width="21" valign="middle" align="right" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block;" target="_blank" alias="accept-now"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/btn-left-blue-gif-5922-06-28-2016.gif" width="21" height="46" alt="" border="0" style="display:block;" /></a></td>
+                                <td valign="middle" height="46" align="center" style="background-color:#0079c1; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:block;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block; width:100%; line-height:46px !important;" target="_blank" alias="accept-now">Accept&nbsp;now</a></td>
+                                <td width="21" valign="middle" align="left" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff;"><a href="%%=redirectTo(@accept_now_link)=%%" style="text-decoration:none; font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#ffffff; display:inline-block;" target="_blank" alias="accept-now"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/btn-right-blue-gif-5922-06-28-2016.gif" width="21" height="46" border="0" alt="" style="display:block;" /></a></td>
+                                </tr>
+                              </table>
+                            <!-- Button - Left, middle, and right links require identical URLs - End -->
+                            </td>
+                           </tr>
+                           <tr>
+                             <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:40px; line-height:1.2em;">Call 
+                             <span style="line-height:1.2em; white-space: nowrap;">1-866-496-2219</span> 
+                             or drop by your local 
+                             <span style="line-height:1.2em; white-space: nowrap;"><a href="http://locator.bmo.com/Default.aspx?t=bb&lang=en" target="_blank" style="color:#0079c1; text-decoration:none; line-height:1.2em;" alias="">BMO&nbsp;branch</a>.</span></td>
+                          </tr>      
+                         </table>
+                         <!-- Fixes alignment in Outlook 2007, 2010, and 2013. Ensure align and width values match in table directly under conditional statement -->
+                                    <!--[if gte mso 9]>
+                                </td>
+                                <td align="left" valign="top" width="285">
+                        <![endif]-->
+                          <table bgcolor="#f2f2f0" class="full-width" width="285" border="0" cellpadding="0" cellspacing="0" align="right">
+                          <tr>
+                          	<td class="mobile-padding" width="20" valign="bottom" style="padding-top:25px; padding-bottom:25px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                            <td valign="top" align="left" style="padding-top:25px; padding-bottom:25px;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                   <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:11px; line-height:1.2em;">Enjoy all these benefits and more with your BMO AIR&nbsp;MILES MasterCard:</td>
+                                </tr> 
+                                <tr>
+                                   <td valign="top" align="left" class="dark-grey" style="font-size:15px; color:#2d2d2d; font-family:'dax',Arial,Helvetica,sans-serif; font-weight:bold; padding-top:0px; padding-bottom:13px; line-height:1.2em;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/img-card-airmiles-small-en-5922-06-28-2016.jpg" alt="" width="131" height="81" border="0" style="display:block; font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none;" /></td>
+                                </tr>                               
+                                <tr>
+                                  <td valign="top" align="left" style="padding-top:0px; padding-bottom:0px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="left">
+                                    <tr>
+                                      <td width="13" valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">&bull;</td>
+                                      <td valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">No annual 
+                                      <span style="line-height:1.2em; white-space: nowrap;">fee<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">4</sup></span></td>
+                                    </tr>
+                                    <tr>
+                                      <td width="13" valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">&bull;</td>
+                                      <td valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">Get 200&nbsp;Bonus Miles after your 
+                                      <span style="line-height:1.2em; white-space: nowrap;">first&nbsp;purchase<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">3</sup></span></td>
+                                    </tr>
+                                    <tr>
+                                      <td width="13" valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">&bull;</td>
+                                      <td valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">2&nbsp;Miles for every 
+                                      <span style="line-height:1.2em; white-space: nowrap;">$20</span> 
+                                      you spend in the first 
+                                      <span style="line-height:1.2em; white-space: nowrap;">six&nbsp;months<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">3</sup></span> 
+                                      and 1&nbsp;Mile for every 
+                                      <span style="line-height:1.2em; white-space: nowrap;">$20</span> 
+                                      <span style="line-height:1.2em; white-space: nowrap;">after&nbsp;that<sup style="font-size: 11px; line-height: 0; vertical-align: 4px;">2</sup></span></td>
+                                    </tr>
+                                    <tr>
+                                      <td width="13" valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">&bull;</td>
+                                      <td valign="top" class="body" style="font-size:15px; color:#414141; font-family:'dax',Arial,Helvetica,sans-serif; padding-top:0px; padding-bottom:12px; line-height:1.2em;">Earn Miles twice &ndash; at participating AIR&nbsp;MILES Partners when you use your BMO AIR&nbsp;MILES MasterCard and show your AIR&nbsp;MILES Collector&nbsp;Card</td>
+                                    </tr>
+                                  </table></td>
+                                </tr>
+                             </table></td>
+                             <td class="mobile-padding" width="20" valign="bottom" style="padding-top:25px; padding-bottom:25px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                          </tr>                          
+                          </table></td>
+                        </tr>                    
+                      </table></td>
+                    <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                  </tr>
+                </table></td>
+              </tr>
+              <!-- Content - Text/CTA - End -->
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Content - End -->
+
+%%[ ENDIF ]%%
+
+%%[ IF UPPERCASE(@user_language) == 'F' OR UPPERCASE(@user_language) == 'FR' THEN ]%%
+
+<!-- Footer - BMO - French - Start -->
+<tr>
+<td valign="top">
+<table width="100%" bgcolor="#0079c1" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top" align="left"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                	<tr>
+                      <td valign="top" class="mobile-footer-nav" style="padding-top:27px; padding-bottom:26px;">
+                      <table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                      <tr>
+                      <td valign="top" align="left" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#559bc6; line-height:1.2em;" class="white">
+                      <span style="line-height:1.2em;" class="mobile-footer-break">
+                      <a href="mailto:remarque@bmo.com" target="_blank" style="color:#ffffff; text-decoration:none; line-height:1.2em;" alias="footer-email-us">Nous joindre par&nbsp;courriel</a></span>
+                      <span style="line-height:1.2em;" class="mobile-hidden"> &nbsp;&nbsp; | &nbsp;&nbsp; </span>
+                      <span style="line-height:1.2em;" class="mobile-footer-break">
+                      <a href="https://www.bmo.com/oab/start?_lang=fr" target="_blank" style="color:#ffffff; text-decoration:none; line-height:1.2em;" alias="footer-book-an-appointment">Prendre&nbsp;rendez-vous</a></span>
+                      <span style="line-height:1.2em;" class="mobile-hidden"> &nbsp;&nbsp; | &nbsp;&nbsp; </span>
+                      <span style="line-height:1.2em;" class="mobile-footer-break">
+                      <a href="http://locator.bmo.com/Default.aspx?t=bb&lang=fr" target="_blank" style="color:#ffffff; text-decoration:none; line-height:1.2em;" alias="footer-find-a-branch">Trouver&nbsp;une&nbsp;succursale</a></span></td>
+                      </tr>
+                      </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign="top" class="mobile-footer-social-nav" style="padding-bottom:30px;"><table width="194" class="full-width" align="left" cellpadding="0" cellspacing="0" border="0">
+                                      <tr>
+                                        <td valign="top" align="center"><table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="https://www.facebook.com/BMOcommunaute" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-facebook"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-facebook-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                              <td valign="top" align="center" width="16"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="16" height="1" alt="" style="display:block" border="0" /></td>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="https://twitter.com/bmofr" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-twitter"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-twitter-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                              <td valign="top" align="center" width="16"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="16" height="1" alt="" style="display:block" border="0" /></td>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="https://www.youtube.com/user/BMOcommunaute" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-youtube"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-youtube-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                              <td valign="top" align="center" width="16"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="16" height="1" alt="" style="display:block" border="0" /></td>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="http://www.bmo.com/rss/fr" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-rss"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-rss-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                              <td valign="top" align="center" width="16"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="16" height="1" alt="" style="display:block" border="0" /></td>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="https://www.linkedin.com/company/bmo-groupe-financier?trk=biz-companies-cym" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-linkedin"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-linkedin-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                            </tr>
+                                          </table></td>
+                                      </tr>
+                                    </table></td>
+                    </tr>
+                  </table></td>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Footer - BMO - French - End -->
+
+%%[ ELSE ]%%
+
+<!-- Footer - BMO - English - Start -->
+<tr>
+<td valign="top">
+<table width="100%" bgcolor="#0079c1" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top" align="left"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                	<tr>
+                      <td valign="top" class="mobile-footer-nav" style="padding-top:27px; padding-bottom:26px;">
+                      <table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                      <tr>
+                      <td valign="top" align="left" style="font-family:'dax',Arial,Helvetica,sans-serif; font-size:15px; color:#559bc6; line-height:1.2em;" class="white">
+                      <span style="line-height:1.2em;" class="mobile-footer-break">
+                      <a href="mailto:feedback@bmo.com" target="_blank" style="color:#ffffff; text-decoration:none; line-height:1.2em;" alias="footer-email-us">Email&nbsp;Us</a></span>
+                      <span style="line-height:1.2em;" class="mobile-hidden"> &nbsp;&nbsp; | &nbsp;&nbsp; </span>
+                      <span style="line-height:1.2em;" class="mobile-footer-break">
+                      <a href="https://www.bmo.com/oab/start?_lang=en" target="_blank" style="color:#ffffff; text-decoration:none; line-height:1.2em;" alias="footer-book-an-appointment">Book an Appointment</a></span>
+                      <span style="line-height:1.2em;" class="mobile-hidden"> &nbsp;&nbsp; | &nbsp;&nbsp; </span>
+                      <span style="line-height:1.2em;" class="mobile-footer-break">
+                      <a href="http://locator.bmo.com/Default.aspx?t=bb&lang=en" target="_blank" style="color:#ffffff; text-decoration:none; line-height:1.2em;" alias="footer-find-a-branch">Find&nbsp;a&nbsp;Branch</a></span></td>
+                      </tr>
+                      </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td valign="top" class="mobile-footer-social-nav" style="padding-bottom:30px;"><table width="194" class="full-width" align="left" cellpadding="0" cellspacing="0" border="0">
+                                      <tr>
+                                        <td valign="top" align="center"><table width="100%" align="center" cellpadding="0" cellspacing="0" border="0">
+                                            <tr>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="https://www.facebook.com/BMOcommunity" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-facebook"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-facebook-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                              <td valign="top" align="center" width="16"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="16" height="1" alt="" style="display:block" border="0" /></td>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="https://twitter.com/bmo" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-twitter"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-twitter-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                              <td valign="top" align="center" width="16"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="16" height="1" alt="" style="display:block" border="0" /></td>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="https://www.youtube.com/user/BMOcommunity" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-youtube"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-youtube-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                              <td valign="top" align="center" width="16"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="16" height="1" alt="" style="display:block" border="0" /></td>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="http://www.bmo.com/rss/en" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-rss"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-rss-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                              <td valign="top" align="center" width="16"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="16" height="1" alt="" style="display:block" border="0" /></td>
+                                              <td valign="top" align="center" width="26" style="font-size:15px; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif;"><a href="https://www.linkedin.com/company/bank-of-montreal" target="_blank" style="color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" alias="footer-icon-linkedin"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/icon-social-linkedin-5922-06-28-2016.gif" alt="" width="26" height="26" border="0" style="display:block; color:#ffffff; font-family:'dax',Arial,Helvetica,sans-serif; text-decoration:none; font-size:15px;" /></a></td>
+                                            </tr>
+                                          </table></td>
+                                      </tr>
+                                    </table></td>
+                    </tr>
+                  </table></td>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Footer - BMO - English - End -->
+
+%%[ ENDIF ]%%
+
+<!-- Legal - BMO - Start -->
+<tr>
+<td valign="top">
+<table width="100%" bgcolor="#ffffff" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+  <tr>
+    <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+        <tr>
+          <td valign="top"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+              <tr>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+                <td class="mostly-full-width" width="560" valign="top" style="min-width:560px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                	<tr>
+                    <td valign="top" style="padding-top:28px;">
+                    <table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0">
+                   <!-- View online - (Mobile only) - Start -->
+                    <!--[if !mso]><!--><tr class="mobile" style="display:none;"><td valign="top" align="left" style="display:none;" class="mobile"><table width="100%" border="0" cellpadding="0" cellspacing="0"><tr class="mobile" style="display:none;"><td class="footer mobile mobile-view-online-footer-padding" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; line-height:1.2em; mso-line-height-alt:0.6em; display:none;"><div class="mobile" style="height:0; max-height: 0; overflow:hidden;"><a href="%%view_email_url%%" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-view-online">%%= v(@web_version_text) =%%</a></div></td></tr></table></td></tr>
+                    <!--<![endif]-->
+                    <!-- View online - (Mobile only) - End -->
+                     
+                     %%[ IF UPPERCASE(@user_language) == 'F' OR UPPERCASE(@user_language) == 'FR' THEN ]%%
+                     
+                    <!-- Disclaimers - French - Start -->
+                    <tr>
+                      <td valign="top" align="left" style="padding-top:0px; padding-bottom:28px;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td width="13" class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">1</td>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">La pr&eacute;sente offre de carte pr&eacute;autoris&eacute;e est faite &agrave; la condition que vous respectiez les modalit&eacute;s de paiement des autres produits de cr&eacute;dit 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(par</span> 
+                            exemple, marge de cr&eacute;dit, pr&ecirc;t hypoth&eacute;caire, pr&ecirc;t 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">automobile)</span> 
+                            que vous d&eacute;tenez &agrave; BMO. Nous nous r&eacute;servons le droit de retirer cette offre advenant le non-respect d&rsquo;une de vos obligations de paiement, y compris celle d&rsquo;effectuer le paiement mensuel minimal inscrit dans votre relev&eacute; de&nbsp;compte.</td>
+                          </tr>
+                          <tr>
+                            <td width="13" class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">2</td>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">L&rsquo;offre est cumulative au cours de la p&eacute;riode couverte par le relev&eacute;. Les milles de r&eacute;compense AIR&nbsp;MILES sont accord&eacute;s pour les achats port&eacute;s &agrave; votre compte 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(moins</span> 
+                            les remboursements et &agrave; l&rsquo;exclusion des avances de fonds, des op&eacute;rations en quasi-esp&egrave;ces, des frais d&rsquo;int&eacute;r&ecirc;t, des frais et des rajustements de cr&eacute;dit ou de 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">d&eacute;bit),</span> 
+                            sous r&eacute;serve des modalit&eacute;s du Programme de r&eacute;compense AIR&nbsp;MILES et de votre Contrat du titulaire de carte MasterCard BMO. Le nombre de milles accord&eacute; est arrondi au nombre entier inf&eacute;rieur. Aucune fraction de milles n&rsquo;est&nbsp;attribu&eacute;e.</td>
+                          </tr>
+                          <tr>
+                            <td width="13" class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">3</td>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">L&rsquo;offre de 200&nbsp;milles en prime 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(l&rsquo;&laquo;&nbsp;offre&nbsp;&raquo;)</span> 
+                            n&rsquo;est valable que pour les nouveaux comptes de carte MasterCard BMO AIR&nbsp;MILES. Vous devez accepter l&rsquo;offre entre le 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">1<sup style="font-size: 9px; line-height: 0; vertical-align: 3px;">er</sup>&nbsp;juillet</span> 
+                            et le 31&nbsp;ao&ucirc;t&nbsp;2016 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(la</span> 
+                            &laquo;&nbsp;p&eacute;riode de 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">l&rsquo;offre&nbsp;&raquo;).</span> 
+                            Vous devez effectuer un premier achat avec votre nouvelle carte MasterCard BMO AIR&nbsp;MILES pour obtenir la prime unique de 200&nbsp;milles, qui sera port&eacute;e &agrave; votre compte d&rsquo;adh&eacute;rent AIR&nbsp;MILES dans les 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">quarante-cinq&nbsp;(45)</span> 
+                            jours suivant le premier achat effectu&eacute; avec la carte. Avec l&rsquo;offre de deux fois les milles, vous recevez 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">deux&nbsp;(2)</span> 
+                            milles par tranche de 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">20&nbsp;$</span> 
+                            d&rsquo;achats r&eacute;gl&eacute;s &agrave; l&rsquo;aide de votre nouvelle carte MasterCard BMO AIR&nbsp;MILES. L&rsquo;offre s&rsquo;applique aux achats admissibles port&eacute;s &agrave; votre compte de carte 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(moins</span> 
+                            les remboursements et &agrave; l&rsquo;exclusion des avances de fonds, des op&eacute;rations en quasi-esp&egrave;ces, des frais d&rsquo;int&eacute;r&ecirc;ts, des frais et des rajustements de cr&eacute;dit ou de 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">d&eacute;bit)</span> 
+                            pendant les 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">six&nbsp;(6)</span> 
+                            premiers mois qui suivent l&rsquo;ouverture du compte. Les titulaires actuels de la carte MasterCard BMO AIR&nbsp;MILES qui annulent leur carte pendant la p&eacute;riode de l&rsquo;offre, et les titulaires actuels d&rsquo;une carte MasterCard BMO qui passent &agrave; ce produit pendant la p&eacute;riode de l&rsquo;offre ne sont pas admissibles. Votre compte de carte de cr&eacute;dit doit &ecirc;tre en r&egrave;gle au moment o&ugrave; les milles sont accord&eacute;s. Les milles de r&eacute;compense seront cr&eacute;dit&eacute;s au compte d&rsquo;adh&eacute;rent du titulaire principal dans les 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">deux&nbsp;(2)</span> 
+                            jours ouvrables suivant la date du relev&eacute;. Limite 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">d&rsquo;une&nbsp;(1)</span> 
+                            prime par compte d&rsquo;adh&eacute;rent. Tous les milles seront cr&eacute;dit&eacute;s &agrave; votre compte conform&eacute;ment &agrave; votre pr&eacute;f&eacute;rence 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(&eacute;tablie</span> 
+                            entre le compte Argent AIR&nbsp;MILES et le compte R&ecirc;ves 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">AIR&nbsp;MILES)</span> 
+                            au moment de la passation de l&rsquo;&eacute;criture. Si vous annulez votre carte dans les cent 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">quatre-vingts&nbsp;(180)</span> 
+                            jours suivant la date d&rsquo;ouverture de votre compte, tous les milles en prime et les milles de r&eacute;compense obtenus pendant cette p&eacute;riode seront annul&eacute;s. Les milles sont accord&eacute;s sous r&eacute;serve des modalit&eacute;s du Programme de r&eacute;compense AIR&nbsp;MILES et de votre Contrat du titulaire de carte MasterCard BMO. Cette offre peut &ecirc;tre retir&eacute;e ou modifi&eacute;e sans&nbsp;pr&eacute;avis.</td>
+                          </tr>
+                          <tr>
+                            <td width="13" class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;">4</td>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;">Les taux d&rsquo;int&eacute;r&ecirc;t courants, le d&eacute;lai de gr&acirc;ce sans int&eacute;r&ecirc;ts, les frais annuels et tous les autres frais applicables peuvent &ecirc;tre modifi&eacute;s. Les avances de fonds comprennent les transferts de solde, les op&eacute;rations en quasi-esp&egrave;ces et les ch&egrave;ques MasterCard. Pour conna&icirc;tre les taux et les frais courants, passez &agrave; votre succursale, communiquez avec le Centre contact client&egrave;le au 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">1-800-263-2263</span> 
+                            ou consultez 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;"><a href="https://www.bmo.com/cartesdecredit" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="credit-card">bmo.com/cartesdecredit</a>.</span></td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <!-- Disclaimers- French - End -->
+                    <!-- Trademarks - French - Start -->
+                    <tr>
+                      <td valign="top" align="left" style="padding-bottom:28px;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;"><sup style="font-size: 9px; line-height: 0; vertical-align: 3px;">md&dagger;</sup> 
+                            Marques d&eacute;pos&eacute;es d&rsquo;AIR&nbsp;MILES International&nbsp;Trading 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">B.V.,</span> 
+                            employ&eacute;es en vertu d&rsquo;une licence par LoyaltyOne,&nbsp;Co. et par la Banque&nbsp;de&nbsp;Montr&eacute;al.</td>
+                          </tr>
+                          <tr>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;"><sup style="font-size: 9px; line-height: 0; vertical-align: 3px;">MD*</sup> 
+                            Marque d&eacute;pos&eacute;e de MasterCard International Incorporated, utilis&eacute;e sous&nbsp;licence.</td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <!-- Trademarks - French - End -->
+                    <!-- Mandatory CASL statement - BMO - French - Start -->
+                    <tr>
+                      <td valign="top" align="left" style="padding-top:28px; padding-bottom:10px; border-top:1px solid #cacaca;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                   <tr>
+                      <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">Ce message vous est envoy&eacute; par BMO&nbsp;Banque&nbsp;de&nbsp;Montr&eacute;al.</td>
+                    </tr>
+                    <tr>
+                      <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">Si vous d&eacute;sirez ne plus recevoir aucun courriel ou certaines communications seulement de notre part, veuillez vous 
+                      <a href="%%=redirectTo(@unsub_link)=%%" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-unsubscribe">d&eacute;sabonner</a> 
+                      ou communiquer avec nous par l&rsquo;un des moyens suivants&nbsp;: 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">1-877-225-5266,</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">
+                      <a href="mailto:remarque@bmo.com" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-feedback">remarque@bmo.com</a>,</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">&Eacute;quipe&nbsp;centralis&eacute;e&nbsp;LCAP,</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">7th&nbsp;floor &ndash; 55&nbsp;Bloor&nbsp;St&nbsp;West,</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">Toronto,&nbsp;(Ontario)</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">M4W&nbsp;3N5,&nbsp;Canada.</span></td>
+                    </tr>
+                    <tr>
+                      <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">Pour g&eacute;rer vos pr&eacute;f&eacute;rences de courriel et vos abonnements &agrave; d&rsquo;autres communications, visitez notre 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">
+                      <a href="%%=redirectTo(@sc_link)=%%" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-subscription-centre">Centre&nbsp;d&rsquo;abonnement</a>.</span></td>
+                    </tr>
+                    <tr>
+                      <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;">
+                      <a href="https://www.bmo.com/accueil/a-propos-de-bmo/services-bancaires/confidentialite-securite/notre-code-de-confidentialite" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-privacy">Confidentialit&eacute;</a> 
+                      | 
+                      <a href="https://www.bmo.com/accueil/popups/global/legal" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-legal">Notes&nbsp;juridiques</a> 
+                      | 
+                      <a href="https://www.bmo.com/accueil/a-propos-de-bmo/services-bancaires/confidentialite-securite/comment-nous-vous-protegeons" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-security">S&eacute;curit&eacute;</a> 
+                      | 
+                      <a href="https://www.bmo.com/accueil/a-propos-de-bmo/services-bancaires/accessibilite/accessibilite-a-bmo" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-accessibility">Accessibilit&eacute;</a></td>
+                    </tr>
+                    </table>
+                    </td>
+                    </tr>
+                    <!-- Mandatory CASL statement - BMO - French - End -->
+                    
+                    %%[ ELSE ]%%
+                    
+                    <!-- Disclaimers - English - Start -->
+                    <tr>
+                      <td valign="top" align="left" style="padding-top:0px; padding-bottom:28px;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td width="13" class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">1</td>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">This 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">pre-approval</span> 
+                            offer is conditional on your compliance with the payment terms of other credit products 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(for</span> example, line of credit, mortgage, automobile 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">financing)</span> 
+                            that you have with BMO. We reserve the right to withdraw this offer if you are in default of any of your payment obligations, including any requirement to make the minimum monthly payment as shown on your account&nbsp;statement.</td>
+                          </tr>
+                          <tr>
+                            <td width="13" class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">2</td>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">Offer is cumulative over the statement period. Award of AIR&nbsp;MILES Reward Miles is made for purchases charged to your account 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(less</span> 
+                            refunds and excluding cash advances, cash-like transactions, interest charges, fees, credit or debit 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">adjustments)</span> 
+                            and is subject to the Terms and Conditions of the AIR&nbsp;MILES Reward Program and your BMO MasterCard Cardholder Agreement. The number of Miles will be rounded down to the nearest whole number. Fractions of Miles will not be&nbsp;awarded.</td>
+                          </tr>
+                          
+                          <tr>
+                            <td width="13" class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">3</td>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">The 200&nbsp;Bonus Miles offer 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(&ldquo;Offer&rdquo;)</span> 
+                            is limited to new BMO AIR&nbsp;MILES MasterCard accounts. Your acceptance of the offer must be received between 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">July&nbsp;1</span> 
+                            and 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">August&nbsp;31,&nbsp;2016</span> 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(&ldquo;Offer&nbsp;Period&rdquo;).</span> 
+                            You must make a first card purchase on your new BMO AIR&nbsp;MILES MasterCard to receive the one-time 200&nbsp;Bonus Miles which will be applied to your AIR&nbsp;MILES Collector Account within 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">forty-five&nbsp;(45)</span> 
+                            days of your first card purchase. 2X the Miles are awarded at a rate of 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">two&nbsp;(2)</span> 
+                            Miles for every 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">$20</span> 
+                            spent using your new BMO AIR&nbsp;MILES MasterCard and applies to eligible purchases charged to your card account 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(less</span> 
+                            refunds and excluding cash advances, cash-like transactions, interest charges, fees, credit or debit 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">adjustments)</span> 
+                            in the first 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">six&nbsp;(6)</span> 
+                            months from the date your account is opened. Existing BMO AIR&nbsp;MILES MasterCard customers or those who cancel their card during the Offer Period, and existing BMO MasterCard customers who transfer into this product during the Offer Period are not eligible. Your credit card account must be in good standing at the time the Miles are awarded. Reward Miles will be credited to the primary cardholder's Collector Account within 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">two&nbsp;(2)</span> 
+                            business days of your statement date. Limit of 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">one&nbsp;(1)</span> 
+                            Bonus offer per Collector Account. All Miles will be credited in accordance with the set balance preference 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">(between</span> 
+                            AIR&nbsp;MILES Cash and AIR&nbsp;MILES Dream 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">balances)</span> 
+                            at the time of posting. If you cancel your card within one hundred and 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">eighty&nbsp;(180)</span> 
+                            days from the date your account is opened, all Bonus Miles and reward Miles earned within that period will be cancelled. Award of Miles is subject to the Terms and Conditions of the AIR&nbsp;MILES Reward Program and your BMO&nbsp;MasterCard Cardholder Agreement. This offer may be withdrawn or changed without&nbsp;notice.</td>
+                          </tr>
+                          
+                          <tr>
+                            <td width="13" class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;">4</td>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;">Ongoing interest rates, 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">interest-free</span> 
+                            grace period, annual fees and all other applicable fees are subject to change. Cash advances include Balance Transfers, cash-like transactions and MasterCard cheques. Visit your branch; call the Customer Contact Centre at 
+                            <span style="line-height:1.2em; white-space: nowrap; mso-line-height-alt:0.6em;">1-800-263-2263,</span> 
+                            or visit <a href="http://www.bmo.com/creditcards" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="credit-card">bmo.com/creditcards</a> for current rates and&nbsp;fees.</td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <!-- Disclaimers- English - End -->
+                    <!-- Trademarks - English - Start -->
+                    <tr>
+                      <td valign="top" align="left" style="padding-bottom:28px;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                          <tr>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;"><sup style="font-size: 9px; line-height: 0; vertical-align: 3px;">&reg;&dagger;</sup> Trademarks of AIR&nbsp;MILES International Trading&nbsp;B.V. Used under license by LoyaltyOne,&nbsp;Co. and Bank&nbsp;of&nbsp;Montreal.</td>
+                          </tr>
+                          <tr>
+                            <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;"><sup style="font-size: 9px; line-height: 0; vertical-align: 3px;">&reg;*</sup> 
+                            Registered trademark of MasterCard International Incorporated, used under&nbsp;license.</td>
+                          </tr>
+                        </table></td>
+                    </tr>
+                    <!-- Trademarks - English - End -->                    
+                    <!-- Mandatory CASL statement - BMO - English - Start -->
+                    <tr>
+                      <td valign="top" align="left" style="padding-top:28px; padding-bottom:10px; border-top:1px solid #cacaca;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                   <tr>
+                      <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">This message is sent to you by Bank&nbsp;of&nbsp;Montreal.</td>
+                    </tr>
+                    <tr>
+                      <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">To no longer receive any or all email communications from us, please 
+                      <a href="%%=redirectTo(@unsub_link)=%%" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-unsubscribe">unsubscribe</a> 
+                      or contact us at one of the following: 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">1-877-CALL-BMO,</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">
+                      <a href="mailto:feedback@bmo.com" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-feedback">feedback@bmo.com</a>,</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">CASL&nbsp;Central&nbsp;Team,</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">7th&nbsp;floor &ndash; 55&nbsp;Bloor&nbsp;St&nbsp;West,</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">Toronto,&nbsp;ON,</span> 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">M4W&nbsp;3N5,&nbsp;Canada</span></td>
+                    </tr>
+                    <tr>
+                      <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:10px; line-height:1.2em; mso-line-height-alt:0.6em;">To manage your email preferences, including subscribing to other email communications, visit our 
+                      <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">
+                      <a href="%%=redirectTo(@sc_link)=%%" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-subscription-centre">Subscription&nbsp;Centre</a>.</span></td>
+                    </tr>
+                    <tr>
+                      <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;">
+                      <a href="https://www.bmo.com/home/about/banking/privacy-security/our-privacy-code" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-privacy">Privacy</a> 
+                      | 
+                      <a href="https://www.bmo.com/home/popups/global/legal" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-legal">Legal</a> 
+                      | 
+                      <a href="https://www.bmo.com/home/about/banking/privacy-security/how-we-protect-you" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-security">Security</a> 
+                      | 
+                      <a href="https://www.bmo.com/home/about/banking/accessibility/accessibility-at-bmo" target="_blank" style="color:#898989; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="footer-accessibility">Accessibility</a></td>
+                    </tr>
+                    </table>
+                    </td>
+                    </tr>
+                    <!-- Mandatory CASL statement - BMO - English - End -->
+                    
+                    %%[ ENDIF ]%%  
+                     <!-- SRN Number - BMO - French - Start -->
+                    <tr>
+                      <td valign="top" align="left" style="padding-top:18px; padding-bottom:28px;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                      <td class="footer" valign="top" align="left" style="font-size:11px; color:#898989; font-family:Arial, Helvetica, sans-serif; padding-top:0px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;">%%=v(@srn)=%%</td>
+                    </tr>
+                    </table>
+                    </td>
+                    </tr>
+                    <!-- SRN Number - BMO - French - End -->                    
+                    </table>
+                    </td>
+                    </tr>
+                  </table></td>
+                <td class="mobile-padding" width="20" valign="bottom" style="padding-bottom:0px;"><img src="http://image.e-news.bmo.com/lib/fe981570726d047b75/m/2/spacer-15-5922-06-28-2016.gif" width="20" height="1" alt="" style="display:block" border="0" /></td>
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+</table>
+</td>
+</tr>
+<!-- Legal - BMO - End -->
+
+</table>
+<!-- Exact Target Tracking Code - Start -->
+<custom name="opencounter" type="tracking">
+<!-- Exact Target Tracking Code - End --> 
+<!-- Tracking pixels (if required) - Start -->
+<img src="https://pixel.inbox.exacttarget.com/pixel.gif?r=3c464c3f9a11c346811cf9f99f470a19a8314762" width="1" height="1" />			
+<!-- Tracking pixels (if required) - End -->
+</body>
+</html>
