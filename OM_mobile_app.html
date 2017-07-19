@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+<head>
+<!-- 
+//  Version:    1.0
+//  Date:       May 2015
+//  Authors:    Olivia Mikhael
+-->
+  <title>Allergies App</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <!-- CSS Styling-->
+  <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+  <!-- JQ libraries-->
+  <script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+  <script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+  <!-- Customized JS-->
+  <script type="text/javascript">      
+    //once page1 is active
+    //  inactivate any previous tab styling (turn off ui-btn-active styling)
+    //  hide the tab's linked content
+    //  activate the first tab styling (set ui-btn-active styling)
+    //  show content linked to the first tab
+    //
+    //  once a tab is selected (onClick)
+    //      inactivate any previous tab styling (turn off ui-btn-active styling)
+    //      hide the tab's linked content
+    //      activate the selected tab styling (set ui-btn-active styling)
+    //      look for the link that the tab is referencing href by id
+    //      show its content
+  	$(document).on("pagecreate", "#page1", function(){
+        $(".tabButton").removeClass("ui-btn-active");
+        $(".tabView").hide();
+        $(".tabButton").eq(0).addClass("ui-btn-active");
+        var viewHref  = $(".tabButton").eq(0).prop("href");
+        $(viewHref.substr(viewHref.indexOf('#'))).show();
+    
+        $(".tabButton").on("click", function(){
+            $(".tabButton").removeClass("ui-btn-active");
+            $(".tabView").hide();
+            $(this).addClass("ui-btn-active");
+            var href = $(this).prop("href");
+            $(href.substr(href.indexOf('#'))).show();
+            return false;
+        });
+	});
+    
+    //form validation
+    //when form is submitted validation form function is called
+    //once its called, set email, title and comment variables as values of email text and textarea coming from the form
+    //if email is empty set an alert message
+    //if title is empty set an alert message
+    //if commen tis empty set an alert message
+    function validateForm() {
+        var email = document.forms["myForm"]["email"].value;
+        if (email == null || email == "") {
+            alert("Please enter an email");
+            return false;
+        }
+        var title = document.forms["myForm"]["text"].value;
+        if (title == null || title == "") {
+            alert("Please enter an title");
+            return false;
+        }
+        var comment = document.forms["myForm"]["textarea"].value;
+        if (comment == null || comment == "") {
+            alert("Please enter an comment");
+            return false;
+        }
+    }
+  </script>
+</head> 
+<body>
+
+<div data-role="page" id="page1">
+    
+	<!-- set header section, includes the nav bar -->
+	<div data-role="header" data-position="fixed">
+     	<!-- header -->
+        <h1>Allergies</h1>
+        	<!-- set up the different nav bar (tabs) -->
+		<div data-role="navbar" id="navbar" data-iconpos="top" >
+			<ul>
+				<li><a href="#one" class="tabButton">Season Allergies</a></li>
+				<li><a href="#two" class="tabButton">Symptoms</a></li>
+				<li><a href="#three" class="tabButton">Contact us</a></li>
+			</ul>
+		</div>
+	</div>
+    
+    <!-- body -->
+    <div role="main" class="ui-content">
+        
+        <!-- content for each tab/nav -->
+        <div data-role="tabs" id="tabs" >
+
+            <!-- content for Season Allergies tab (id is one) -->
+            <div id="one" class="tabView">
+                <ul data-role="listview" data-inset="true">
+                    <li><a href="http://www.webmd.com/allergies/guide/spring-allergies" onclick="javascript:void window.open('http://www.webmd.com/allergies/guide/spring-allergies','1431530460808','width=700,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=1,left=0,top=0');return false;">Spring Allergies</a></li>
+                    <li><a href="http://www.webmd.com/allergies/guide/summer-allergies" onclick="javascript:void window.open('http://www.webmd.com/allergies/guide/summer-allergies','1431530460808','width=700,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=1,left=0,top=0');return false;">Summar Allergies</a></li>
+                    <li><a href="http://www.webmd.com/allergies/guide/fall-allergy-relief" onclick="javascript:void window.open('http://www.webmd.com/allergies/guide/fall-allergy-relief','1431530460808','width=700,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=1,left=0,top=0');return false;">Fall Allergies </a></li>
+                    <li><a href="http://www.webmd.com/allergies/guide/winter-allergies" onclick="javascript:void window.open('http://www.webmd.com/allergies/guide/winter-allergies','1431530460808','width=700,height=500,toolbar=0,menubar=0,location=0,status=1,scrollbars=1,resizable=1,left=0,top=0');return false;">Winter Allergies</a></li>
+                </ul>
+            </div>
+	
+            <!-- Content for Symptoms tab  (id is two) -->
+            <div id="two" class="tabView">
+                <h2>Allergies Symptoms Search:</h2>
+                <!-- set up the search input -->
+                <form class="ui-filterable">
+                    <input type="search" id="filter-input">
+                </form>
+                <!-- set up the items for the search input -->
+                <ul data-role="listview" data-inset="true" data-filter="true" data-input="#filter-input">
+                    <li>Runny nose</li>
+                    <li>Watery eyes</li>
+                    <li>Sneezing</li>
+                    <li>Coughing</li>
+                    <li>Itchy eyes and nose</li>
+                    <li>Dark circles under the eyes</li>
+                </ul>
+            </div>
+  
+            <!-- content for Contact us tab (id is three) -->
+            <div id="three" class="tabView">
+                <h2>Contact us:</h2>
+                <form name="myForm" action="mobile_app.html" onsubmit="return validateForm()" method="post">
+                    <label for="email">Email:</label>
+                    <input type="email" data-clear-btn="false" name="email" id="email" value="">
+                    <label for="text">Title:</label>
+                    <input type="text" name="text" id="text" value="">
+                    <label for="textarea">Comment/Question:</label>
+                    <textarea name="textarea" id="textarea"></textarea>
+                    <input type="submit" data-role="none" value="Submit">
+                </form>
+            </div>
+            
+        </div>
+    </div>
+    
+    <!-- footer -->
+     <div data-role="footer" data-position="fixed">
+        <h1>Created by: Olivia Mikhael</h1> 
+    </div>
+     
+</div>  
+</body>
+</html>

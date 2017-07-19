@@ -1,0 +1,941 @@
+%%[
+SET @ride_id = TRIM([Ride_ID])  
+SET @Rows = LOOKUPROWS("Customers","Ride_ID",@ride_id)
+SET @first_name = PROPERCASE(REPLACELIST(Field(ROW(@Rows, 1), "First_Name"), "", "<", ">", "|", "&", ";"))
+SET @last_name = PROPERCASE(REPLACELIST(Field(ROW(@Rows, 1), "Last_Name"), "", "<", ">", "|", "&", ";"))
+SET @phone = TRIM(Field(ROW(@Rows, 1), "Phone"))
+SET @email = TRIM(Field(ROW(@Rows, 1), "Email"))
+SET @bike_family = TRIM(Field(ROW(@Rows, 1), "Bike_Family"))
+SET @dealer_name = TRIM(Field(ROW(@Rows, 1), "Dealer_Name"))
+SET @date = TRIM(Field(ROW(@Rows, 1), "Requested_Date"))
+SET @date = FormatDate(@date, "MMM DD, YYYY")
+SET @time = TRIM(Field(ROW(@Rows, 1), "Requested_Time"))
+SET @contact_by = TRIM(UPPERCASE(TRIM(Field(ROW(@Rows, 1), "Contact_By"))))
+SET @dealer_id = TRIM([Dealer_ID])   
+SET @DealerRows = LOOKUPROWS("Dealers","Dealer_Code",@dealer_id)
+SET @language = TRIM(Field(ROW(@DealerRows, 1), "Dealer_Language"))
+SET @preferred_lang = TRIM(UPPERCASE([Language]))
+
+IF @language == "F" then 
+  SET @language = "french"
+ELSE
+  SET @language = "english"
+ENDIF
+
+SET @ride_booked = Concat('https://pages.m.harley-davidson.ca/dealer-confirmation/?l=',@language,'&r=',@ride_id,'&s=CSRBooked')
+SET @ride_canceled = Concat('https://pages.m.harley-davidson.ca/dealer-confirmation/?l=',@language,'&r=',@ride_id,'&s=CSRCancelled')
+SET @ride_no_response = Concat('https://pages.m.harley-davidson.ca/dealer-confirmation/?l=',@language,'&r=',@ride_id,'&s=CSRNoResponse')
+
+IF EMPTY(@first_name) THEN
+	SET @full_name = "Customer"
+ELSE
+    SET @full_name = CONCAT(@first_name, " ", @last_name)
+ENDIF
+
+IF LOWERCASE(@language) == "english" THEN 
+	SET @subject_line = CONCAT("IMPORTANT! Take action to ensure ", @full_name, "’s Test Ride is booked")
+    SET @lang_link = "en"
+    SET @preheader = "Please contact DMC immediately to ensure a Test Ride is booked, then let us know the outcome of your call."
+ELSEIF LOWERCASE(@language) == "french" THEN 
+	SET @subject_line = CONCAT("IMPORTANT! Prenez les mesures nécessaires pour que l’essai sur route de ", @full_name, " soit réservé")
+    SET @lang_link = "fr"
+    SET @preheader = "Veuillez communiquer immédiatement avec le CMC pour vous assurer que l’essai sur route de ce client soit planifié, puis faites-nous savoir le résultat de votre appel."
+ENDIF
+
+SET @logo_link = concat("http://www.harley-davidson.com/content/h-d/",@lang_link,"_CA/home.html")
+
+]%%
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title></title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="http://fabd3b13b53d3bfbded8-d45e6e83287de1598fe1577e3d0b7e02.r62.cf2.rackcdn.com/HD%20-%20Letterpress/stylesheet.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+div, p, a, li, td, * {
+	-webkit-text-size-adjust: none;
+}
+.ExternalClass {
+	line-height: 120% !important;
+}
+.ExternalClass * {
+	line-height: 120% !important;
+}
+div.preheader { 
+	display:none !important; 
+}
+.body a {
+	text-decoration: none;
+	color: #cccccc;
+}
+.orange a {
+	text-decoration: none;
+	color: #ef6836;
+}
+.grey, .footer a {
+	text-decoration: none;
+	color: #919191;
+}
+.white a {
+	text-decoration: none;
+	color: #ffffff;
+}
+@media only screen and (max-width: 620px) {
+/* General */	 
+table[class~=full-width] {
+	width: 100% !important;
+}
+img[class~=full-width] {
+	width: 100% !important;
+	padding: 0 !important;
+	height: auto !important;
+}
+td[class~=full-width] {
+	width: 100% !important;
+}
+td[class~=mostly-full-width] {
+	width: 90% !important;
+	min-width: 90% !important;
+}
+td[class~=mobile-height-auto] {
+	height: auto !important;
+}
+hr[class~=horizontal-rule] {
+	width: 100% !important;
+}
+td[class~=mobile-padding] {
+	width: 5% !important;
+}
+td[class~=mobile-padding] img {
+	width: 100% !important;
+}
+table[class~=mobile-hidden], tr[class~=mobile-hidden], td[class~=mobile-hidden], span[class~=mobile-hidden], br[class~=mobile-hidden] {
+	display: none !important;
+}
+tr[class~=mobile-hidden] td {
+	display: none !important;
+}
+tr[class~=mobile] {
+	display: table-row !important;
+}
+td[class~=mobile] {
+	display: table-cell !important;
+}
+div[class~=mobile] {
+	display: block !important;
+	height: auto !important;
+	max-height: none !important;
+	overflow: visible !important;
+	float: none !important;
+}
+img[class~=centered] {
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+td[class~=text-align-left] {
+	text-align: left !important;
+}
+td[class~=text-align-center] {
+	text-align: center !important;
+}
+table[class~=table-align-center] {
+	margin-left: auto !important;
+	margin-right: auto !important;
+}
+span[class~=mobile-break] {
+	display: block !important;
+}
+img[class~=mobile-icon-caret-lg] {
+	display: block !important;
+	width: 30px !important;
+	height: 30px !important;
+}
+td[class~=mobile-border-none] {
+	border: none !important;
+}
+td[class~=padding-top-0] {
+	padding-top: 0px !important;
+}
+/* Content */
+td[class~=mobile-orange-call-out] {
+	padding-top: 15px !important;
+	padding-bottom: 15px !important;
+	height: auto !important;
+	font-size:17px !important;
+}
+td[class~=mobile-btn-left] {
+	width:15px !important;
+}
+td[class~=mobile-btn-middle] {
+	font-size:18px !important;
+	text-align:left !important;
+}
+td[class~=mobile-btn-right] {
+	width:35px !important;
+	text-align:left !important;
+}
+td[class~=mobile-btn-height-2-lines] {
+	height:63px !important;
+}
+img[class~=mobile-btn-height-2-lines-img] {
+	height:63px !important;
+}
+/* Optional Footer and Footer - General */
+span[class~=mobile-footer-break] {
+	display: block !important;
+	padding-bottom: 33px !important;
+}
+td[class~=mobile-opt-footer-padding-0] {
+	padding-bottom:0px !important;
+}
+td[class~=mobile-footer-nav] {
+	padding-bottom: 3px !important;
+}
+td[class~=mobile-cta-padding-bottom] {
+	padding-bottom: 24px !important;
+}
+}
+@media only screen and (max-width: 430px) {
+/* General */
+td[class~=big] {
+	font-size: 40px !important;
+}
+td[class~=medium] {
+	font-size: 29px !important;
+}
+td[class~=small] {
+	font-size: 24px !important;
+}
+td[class~=body-copy],
+a[class~=body-copy],
+img[class~=body-copy] {
+	font-size: 15px !important;
+}
+sup[class~=mobile-sup-medium] {
+	font-size: 15px !important;
+	vertical-align: 21px !important;
+}
+sup[class~=mobile-sup-small] {
+	font-size: 15px !important;
+	vertical-align: 8px !important;
+}
+/* Grey keyline with notch */
+td[class~=mobile-keyline-notch-width] {
+	width: 47% !important;
+}
+td[class~=mobile-keyline-notch-width] {
+	width: 6% !important;
+}
+}
+@media only screen and (max-width: 390px) {
+[style*="h-dletterpressw02regular"] {
+ font-family: 'h-dletterpressw02regular', Verdana, Geneva, sans-serif;
+}
+}
+</style>
+<!-- Outlook font fix - Start -->
+<!--[if mso]>
+<style>
+  [style*="h-dletterpressw02regular"] {
+    font-family: Verdana, Geneva, sans-serif !important;
+  }
+  td, a, span {
+    font-family: Verdana, Geneva, sans-serif !important;
+  }
+</style>
+<![endif]-->
+<!-- Outlook font fix - End -->
+<!--[if gte mso 9]><xml>
+	<o:OfficeDocumentSettings>
+ 	<o:AllowPNG/>
+ 	<o:PixelsPerInch>96</o:PixelsPerInch>
+ 	</o:OfficeDocumentSettings>
+</xml><![endif]-->
+</head>
+<body bgcolor="#343434" style="margin:0; padding:0; min-width:100%;">
+<!-- Pre-header copy - Start -->
+<div class="preheader" style="font-size: 1px; display: none !important;">%%= v(@preheader) =%%</div>
+<!-- Pre-header copy - End -->
+<table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">  
+  <!-- Header - Harley-Davidson - Start -->
+  <tr>
+    <td valign="top" align="center"><table width="100%" bgcolor="#343434" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+        <tr>
+          <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+              <tr>
+              	<!-- Logo - Start -->
+                <td valign="top" align="center"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                    <td class="mostly-full-width" width="540" valign="top" style="min-width:540px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                      <tr>
+                        <td valign="top" align="left" style="padding-top:12px; padding-bottom:12px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                            <tr>
+                              <td valign="middle" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif; text-decoration:none;" class="body-copy"><a href="%%=REDIRECTTO(@logo_link)=%%" target="_blank" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif; text-decoration:none;" class="body-copy" alias="logo"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/logo-01-5828-05-03-2016.gif" alt="Harley-Davidson Canada logo" width="267" height="33" border="0" style="display:block; font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif; text-decoration:none;" class="body-copy" /></a></td>
+                            </tr>
+                          </table></td>
+                        <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                      </tr>
+                    </table></td>
+                   </tr>
+                </table></td>
+                <!-- Logo - End -->
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+  <!-- Header - Harley-Davidson - End --> 
+  
+  %%[ IF LOWERCASE(@language) == "english" THEN ]%%
+  
+  <!-- Content - Harley-Davidson - Start -->
+  <tr>
+    <td valign="top" align="center"><table width="100%" bgcolor="#000000" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+        <tr>
+          <td valign="top" align="center" style="border-top:2px solid #ef6836; border-bottom:2px solid #ef6836;"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+              <tr>
+                <td valign="top" align="center"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                      <td class="mostly-full-width" width="540" valign="top" style="min-width:540px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                      	<!-- Content - Title and main message - Start -->
+                        <tr>
+                          <td class="small white" valign="top" align="left" style="font-size:33px; color:#ffffff; font-family:'h-dletterpressw02regular', Verdana, Geneva, sans-serif; line-height:1.2em; padding-top:46px; padding-bottom:36px;">THIS TEST&nbsp;RIDE REQUEST REQUIRES IMMEDIATE ACTION</td>
+                        </tr>
+                        <tr>
+                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif; padding-top:0px; padding-bottom:36px; line-height:1.2em;">The following Test&nbsp;Ride request was not fulfilled within the required time by the Dealer and the&nbsp;DMC.</td>
+                        </tr>
+                        <!-- Content - Title and main message - End -->
+                        <!-- Content - Customer information table - Start -->
+                        <tr>
+                          <td align="left" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="170" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Name:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="319">
+                                    <![endif]-->
+                                    <table width="319" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@full_name) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#000000" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="170" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Contact number:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="319">
+                                    <![endif]-->
+                                    <table width="319" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@phone) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="170" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Email address:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="319">
+                                    <![endif]-->
+                                    <table width="319" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;"><a href="mailto:%%= v(@email) =%%" target="_blank" style="color:#ffffff; text-decoration:none; line-height:1.2em;">%%= v(@email) =%%</a></td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#000000" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="170" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Chosen bike family:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="319">
+                                    <![endif]-->
+                                    <table width="319" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@bike_family) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="170" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Preferred dealer:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="319">
+                                    <![endif]-->
+                                    <table width="319" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@dealer_name) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#000000" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="170" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Preferred date:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="319">
+                                    <![endif]-->
+                                    <table width="319" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@date) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="170" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Preferred time:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="319">
+                                    <![endif]-->
+                                    <table width="319" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@time) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#000000" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="170" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Method of contact:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="319">
+                                    <![endif]-->
+                                    <table width="319" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@contact_by) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="170" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Preferred language:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="319">
+                                    <![endif]-->
+                                    <table width="319" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@preferred_lang) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                          </table></td>
+                        </tr>
+                        <!-- Content - Customer information table - End -->
+                        <!-- Content - Contact customer to book a ride message - Start -->
+                        <tr>
+                          	<td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif; padding-top:33px; padding-bottom:0px; line-height:1.2em;">Please contact the DMC immediately to ensure a Test&nbsp;Ride is booked. Select an option below to let us know the outcome of your&nbsp;call.</td>
+                        </tr>
+                        <!-- Content - Contact customer to book a ride message - End -->
+                        <!-- Content - CTA buttons - Start -->
+                        <tr>
+                          <td valign="top" align="left" style="padding-top:36px; padding-bottom:41px;"><table width="240" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                            <tr>
+                              <td valign="top" align="left"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0" style="background-color:#ef6836; background: -webkit-linear-gradient(top, #ef6836, #c9480c); background: -o-linear-gradient(top, #ef6836, #c9480c); background: -moz-linear-gradient(top, #c9480c, #ef6836); background: linear-gradient(to top, #c9480c, #ef6836); margin-bottom:0em; border-collapse:collapse; mso-table-lspace:0px; mso-table-rspace:0px;">
+                                <tr>
+                                 <td width="15" height="42" align="left" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-left"><a href="%%=RedirectTo(@ride_booked)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-booked"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="15" height="42" alt="" style="display:block" border="0" /></a></td>
+                                  <td align="left" valign="middle" class="white mobile-btn-middle" height="42" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif; padding-top:0px; padding-bottom:0px; line-height:30px !important;"><a href="%%=RedirectTo(@ride_booked)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:42px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-booked">TEST RIDE BOOKED</a></td>
+                                  <td width="30" height="42" align="center" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-right"><a href="%%=RedirectTo(@ride_booked)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-booked"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/btn-caret-5828-05-03-2016.png" width="9" height="16" alt="" style="display:block; margin-left:auto; margin-right:auto;" border="0" /></a></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="left" style="padding-top:24px;"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0" style="background-color:#ef6836; background: -webkit-linear-gradient(top, #ef6836, #c9480c); background: -o-linear-gradient(top, #ef6836, #c9480c); background: -moz-linear-gradient(top, #c9480c, #ef6836); background: linear-gradient(to top, #c9480c, #ef6836); margin-bottom:0em; border-collapse:collapse; mso-table-lspace:0px; mso-table-rspace:0px;">
+                                <tr>
+                                  <td width="15" height="42" align="left" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-left"><a href="%%=RedirectTo(@ride_canceled)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-cancelled"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="15" height="42" alt="" style="display:block" border="0" /></a></td>
+                                  <td height="42" align="left" valign="middle" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif; padding-top:0px; padding-bottom:0px; line-height:30px !important;" class="white mobile-btn-middle"><a href="%%=RedirectTo(@ride_canceled)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:42px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-cancelled">TEST RIDE CANCELLED</a></td>
+                                  <td width="30" height="42" align="center" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-right"><a href="%%=RedirectTo(@ride_canceled)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-cancelled"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/btn-caret-5828-05-03-2016.png" width="9" height="16" alt="" style="display:block; margin-left:auto; margin-right:auto;" border="0" /></a></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="left" style="padding-top:24px;"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0" style="background-color:#ef6836; background: -webkit-linear-gradient(top, #ef6836, #c9480c); background: -o-linear-gradient(top, #ef6836, #c9480c); background: -moz-linear-gradient(top, #c9480c, #ef6836); background: linear-gradient(to top, #c9480c, #ef6836); margin-bottom:0em; border-collapse:collapse; mso-table-lspace:0px; mso-table-rspace:0px;">
+                                <tr>
+                                  <td width="15" height="63" align="left" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-left"><a href="%%=RedirectTo(@ride_no_response)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-no-response"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="15" height="63" alt="" style="display:block" border="0" /></a></td>
+                                  <td height="63" align="left" valign="middle" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif; padding-top:0px; padding-bottom:0px; line-height:30px !important;" class="white mobile-btn-middle"><a href="%%=RedirectTo(@ride_no_response)=%%" style="text-decoration:none; line-height:1.2em; mso-line-height-alt:0.6em; color:#ffffff; display:block;" target="_blank" alias="btn-no-response">CUSTOMER COULD<br />NOT BE REACHED</a></td>
+                                  <td width="30" height="63" align="center" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-right"><a href="%%=RedirectTo(@ride_no_response)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-no-response"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/btn-caret-5828-05-03-2016.png" width="9" height="16" alt="" style="display:block; margin-left:auto; margin-right:auto;" border="0" /></a></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                          </table></td>
+                         </tr>
+                         <!-- Content - CTA buttons - End -->
+                        </table></td>
+                      <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+  <!-- Content - Harley-Davidson - End --> 
+  <!-- Footer - Harley-Davidson - Start -->
+  <tr>
+    <td valign="top" align="center"><table width="100%" bgcolor="#343434" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+      <tr>
+        <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr>
+              <td valign="top" align="center"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                  <td class="mostly-full-width" width="540" valign="top" style="min-width:540px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                     <td valign="top" style="padding-top:33px; padding-bottom:33px;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                       <!-- Footer - View in browser - Start -->
+                       <tr>
+                          <td class="footer" valign="top" align="left" style="font-size:11px; color:#919191; font-family:Verdana, Helvetica, sans-serif; line-height:1.2em; mso-line-height-alt:0.6em;"><a href="%%view_email_url%%" target="_blank" style="color:#919191; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="view-in-browser">View in browser</a></td>
+                        </tr>
+                        <!-- Footer - View in browser - End -->
+                        <!-- Footer - Legal - Start -->
+                        <tr>
+                          <td align="left" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                            <tr>
+                              <td class="footer" valign="top" align="left" style="font-size:11px; color:#919191; font-family:Verdana, Helvetica, sans-serif; padding-top:12px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;">&copy;&nbsp;2016 H-D or its affiliates. 
+                              <span style="line-height:1.2em; mso-line-height-alt:0.6em; white-space: nowrap;">H-D,</span> 
+                              <span style="line-height:1.2em; mso-line-height-alt:0.6em; white-space: nowrap;">H-D1,</span> 
+                              Harley, 
+                              <span style="line-height:1.2em; mso-line-height-alt:0.6em; white-space: nowrap;">Harley-Davidson,</span> 
+                              Screamin&rsquo;&nbsp;Eagle, MotorClothes and the Bar&nbsp;&amp;&nbsp;Shield logo are among the trademarks of 
+                              <span style="line-height:1.2em; mso-line-height-alt:0.6em; white-space: nowrap;">H-D&nbsp;U.S.A.,&nbsp;LLC.</span></td>
+                            </tr>
+                          </table></td>
+                        </tr>                        
+                        <!-- Footer - Legal - End -->
+                       </table></td>
+                    </tr>
+                  </table></td>
+                  <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                </tr>
+              </table></td>
+            </tr>
+          </table></td>
+      </tr>
+    </table></td>
+  </tr>
+  <!-- Footer - Harley-Davidson - End -->
+  
+  %%[ ELSEIF LOWERCASE(@language) == "french" THEN ]%%
+  
+  <!-- Content - Harley-Davidson - Start -->
+  <tr>
+    <td valign="top" align="center"><table width="100%" bgcolor="#000000" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+        <tr>
+          <td valign="top" align="center" style="border-top:2px solid #ef6836; border-bottom:2px solid #ef6836;"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+              <tr>
+                <td valign="top" align="center"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+                      <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                      <td class="mostly-full-width" width="540" valign="top" style="min-width:540px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                      	<!-- Content - Title and main message - Start -->
+                        <tr>
+                          <td class="small white" valign="top" align="left" style="font-size:37px; color:#ffffff; font-family:'h-dletterpressw02regular', Verdana, Geneva, sans-serif; line-height:1.2em; padding-top:46px; padding-bottom:36px;">CETTE DEMANDE D&rsquo;ESSAI SUR ROUTE DOIT &Ecirc;TRE TRAIT&Eacute;E IMM&Eacute;DIATEMENT</td>
+                        </tr>
+                        <tr>
+                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif; padding-top:0px; padding-bottom:36px; line-height:1.2em;">La demande d&rsquo;essai sur route suivante n&rsquo;a pas &eacute;t&eacute; trait&eacute;e par le d&eacute;taillant ni par le&nbsp;CMC.</td>
+                        </tr>
+                        <!-- Content - Title and main message - End -->
+                        <!-- Content - Customer information table - Start -->
+                        <tr>
+                          <td align="left" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="229" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Nom&nbsp;:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="286">
+                                    <![endif]-->
+                                    <table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@full_name) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#000000" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="229" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Num&eacute;ro de t&eacute;l&eacute;phone&nbsp;:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="286">
+                                    <![endif]-->
+                                    <table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@phone) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                  <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                    <tr>
+                                      <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                        <tr>
+                                          <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                          <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="229" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                            <tr>
+                                              <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Adresse courriel&nbsp;:&nbsp;</td>
+                                            </tr>
+                                          </table>
+                                            <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="286">
+                                    <![endif]-->
+                                            <table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                              <tr>
+                                                <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;"><a href="mailto:%%= v(@email) =%%" target="_blank" style="color:#ffffff; text-decoration:none; line-height:1.2em;">%%= v(@email) =%%</a></td>
+                                              </tr>
+                                            </table></td>
+                                          <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                        </tr>
+                                      </table></td>
+                                      </tr>
+                                  </table></td>
+                                </tr>
+                              </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#000000" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="229" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Famille de motos choisie&nbsp;:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="286">
+                                    <![endif]-->
+                                    <table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@bike_family) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="229" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">D&eacute;taillant pr&eacute;f&eacute;r&eacute;&nbsp;:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="286">
+                                    <![endif]-->
+                                    <table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@dealer_name) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#000000" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="229" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Date pr&eacute;f&eacute;r&eacute;e&nbsp;:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="286">
+                                    <![endif]-->
+                                    <table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@date) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="229" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Heure pr&eacute;f&eacute;r&eacute;e&nbsp;:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="286">
+                                    <![endif]-->
+                                    <table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@time) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#000000" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="229" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">Moyen de communication&nbsp;:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="286">
+                                    <![endif]-->
+                                    <table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@contact_by) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                            <tr>
+                              <td valign="top" align="center" bgcolor="#343434" style="padding-top:10px; padding-bottom:10px;"><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                                <tr>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                    <td class="mostly-full-width" width="516" valign="top" align="left" style="min-width:516px;"><table width="229" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">langue pr&eacute;f&eacute;r&eacute;e&nbsp;:&nbsp;</td>
+                                      </tr>
+                                    </table>
+                                    <!--[if gte mso 9]>
+                                    </td>
+                                    <td align="right" valign="top" width="286">
+                                    <![endif]-->
+                                    <table width="286" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                                      <tr>
+                                          <td class="body-copy white" valign="top" align="left" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif;  line-height:1.2em;">%%= v(@preferred_lang) =%%</td>
+                                      </tr>
+                                    </table></td>
+                                    <td class="mobile-padding" width="12" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="12" height="1" alt="" style="display:block" border="0" /></td>
+                                </tr>
+                               </table></td>
+                            </tr>
+                          </table></td>
+                        </tr>
+                        <!-- Content - Customer information table - End -->
+                        <!-- Content - Contact customer to book a ride message - Start -->
+                        <tr>
+                          	<td class="body-copy body" valign="top" align="left" style="font-size:16px; color:#cccccc; font-family:Verdana, Geneva, sans-serif; padding-top:33px; padding-bottom:0px; line-height:1.2em;">Veuillez communiquer imm&eacute;diatement avec le CMC pour veiller &agrave; ce que l&rsquo;essai sur route soit r&eacute;serv&eacute;. Veuillez s&eacute;lectionner une option 
+                            <span style="line-height:1.2em; white-space: nowrap;">ci-dessous</span> 
+                            pour nous le laisser&nbsp;savoir.</td>
+                        </tr>
+                        <!-- Content - Contact customer to book a ride message - End -->
+                        <!-- Content - CTA buttons - Start -->
+                        <tr>
+                            <td valign="top" align="left" style="padding-top:36px; padding-bottom:41px;"><table width="280" class="full-width" border="0" cellpadding="0" cellspacing="0" align="left">
+                              <tr>
+                                <td valign="top" align="left"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0" style="background-color:#ef6836; background: -webkit-linear-gradient(top, #ef6836, #c9480c); background: -o-linear-gradient(top, #ef6836, #c9480c); background: -moz-linear-gradient(top, #c9480c, #ef6836); background: linear-gradient(to top, #c9480c, #ef6836); margin-bottom:0em; border-collapse:collapse; mso-table-lspace:0px; mso-table-rspace:0px;">
+                                  <tr>
+                                   <td width="15" height="63" align="left" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-left"><a href="%%=RedirectTo(@ride_booked)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-booked"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="15" height="63" alt="" style="display:block" border="0" /></a></td>
+                                    <td height="63" align="left" valign="middle" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif; padding-top:0px; padding-bottom:0px; line-height:30px !important;" class="white mobile-btn-middle"><a href="%%=RedirectTo(@ride_booked)=%%" style="text-decoration:none; line-height:1.2em; mso-line-height-alt:0.6em; color:#ffffff; display:block;" target="_blank" alias="btn-booked">ESSAI SUR<br />ROUTE R&Eacute;SERV&Eacute;</a></td>
+                                    <td width="30" height="63" align="center" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-right"><a href="%%=RedirectTo(@ride_booked)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-booked"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/btn-caret-5828-05-03-2016.png" width="9" height="16" alt="" style="display:block; margin-left:auto; margin-right:auto;" border="0" /></a></td>
+                                  </tr>
+                                 </table></td>
+                              </tr>
+                              <tr>
+                                <td valign="top" align="left" style="padding-top:24px;"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0" style="background-color:#ef6836; background: -webkit-linear-gradient(top, #ef6836, #c9480c); background: -o-linear-gradient(top, #ef6836, #c9480c); background: -moz-linear-gradient(top, #c9480c, #ef6836); background: linear-gradient(to top, #c9480c, #ef6836); margin-bottom:0em; border-collapse:collapse; mso-table-lspace:0px; mso-table-rspace:0px;">
+                                  <tr>
+                                    <td width="15" height="63" align="left" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-left"><a href="%%=RedirectTo(@ride_canceled)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-cancelled"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="15" height="63" alt="" style="display:block" border="0" /></a></td>
+                                    <td height="63" align="left" valign="middle" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif; padding-top:0px; padding-bottom:0px; line-height:30px !important;" class="white mobile-btn-middle"><a href="%%=RedirectTo(@ride_canceled)=%%" style="text-decoration:none; line-height:1.2em; mso-line-height-alt:0.6em; color:#ffffff; display:block;" target="_blank" alias="btn-cancelled">ESSAI SUR<br />ROUTE ANNUL&Eacute;</a></td>
+                                    <td width="30" height="63" align="center" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-right"><a href="%%=RedirectTo(@ride_canceled)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-cancelled"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/btn-caret-5828-05-03-2016.png" width="9" height="16" alt="" style="display:block; margin-left:auto; margin-right:auto;" border="0" /></a></td>
+                                  </tr>
+                                 </table></td>
+                              </tr>
+                              <tr>
+                                <td valign="top" align="left" style="padding-top:24px;"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0" style="background-color:#ef6836; background: -webkit-linear-gradient(top, #ef6836, #c9480c); background: -o-linear-gradient(top, #ef6836, #c9480c); background: -moz-linear-gradient(top, #c9480c, #ef6836); background: linear-gradient(to top, #c9480c, #ef6836); margin-bottom:0em; border-collapse:collapse; mso-table-lspace:0px; mso-table-rspace:0px;">
+                                  <tr>
+                                    <td width="15" height="63" align="left" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-left"><a href="%%=RedirectTo(@ride_no_response)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-no-response"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="15" height="63" alt="" style="display:block" border="0" /></a></td>
+                                    <td height="63" align="left" valign="middle" style="font-size:16px; color:#ffffff; font-family:Verdana, Geneva, sans-serif; padding-top:0px; padding-bottom:0px; line-height:30px !important;" class="white mobile-btn-middle"><a href="%%=RedirectTo(@ride_no_response)=%%" style="text-decoration:none; line-height:1.2em; mso-line-height-alt:0.6em; color:#ffffff; display:block;" target="_blank" alias="btn-no-response">NOUS N&rsquo;AVONS PAS<br />PU JOINDRE LE CLIENT</a></td>
+                                    <td width="30" height="63" align="center" valign="middle" style="padding-top:0px; padding-bottom:0px; line-height:42px !important; mso-line-height-alt:14px;" class="mobile-btn-right"><a href="%%=RedirectTo(@ride_no_response)=%%" style="color: #ffffff; display:inline-block; width:100%; line-height:30px !important; vertical-align:middle; text-decoration:none;" target="_blank" alias="btn-no-response"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/btn-caret-5828-05-03-2016.png" width="9" height="16" alt="" style="display:block; margin-left:auto; margin-right:auto;" border="0" /></a></td>
+                                  </tr>
+                                 </table></td>
+                              </tr>
+                            </table></td>
+                          </tr>
+                          <!-- Content - CTA buttons - End -->
+                        </table></td>
+                      <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                    </tr>
+                  </table></td>
+              </tr>
+            </table></td>
+        </tr>
+      </table></td>
+  </tr>
+  <!-- Content - Harley-Davidson - End --> 
+  <!-- Footer - Harley-Davidson - Start -->
+  <tr>
+    <td valign="top" align="center"><table width="100%" bgcolor="#343434" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0;">
+      <tr>
+        <td valign="top" align="center"><table class="full-width" width="600" border="0" align="center" cellpadding="0" cellspacing="0">
+            <tr>
+              <td valign="top" align="center"><table width="100%" align="left" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                  <td class="mostly-full-width" width="540" valign="top" style="min-width:540px; padding-bottom:0px;"><table class="full-width" width="100%" border="0" cellpadding="0" cellspacing="0" align="center">
+                    <tr>
+                     <td valign="top" style="padding-top:33px; padding-bottom:33px;"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                       <!-- Footer - View in browser - Start -->
+                       <tr>
+                          <td class="footer" valign="top" align="left" style="font-size:11px; color:#919191; font-family:Verdana, Helvetica, sans-serif; line-height:1.2em; mso-line-height-alt:0.6em;"><a href="%%view_email_url%%" target="_blank" style="color:#919191; text-decoration:underline; line-height:1.2em; mso-line-height-alt:0.6em;" alias="view-in-browser">Lire dans le navigateur</a></td>
+                        </tr>
+                        <!-- Footer - View in browser - End -->
+                        <!-- Footer - Legal - Start -->
+                        <tr>
+                          <td align="left" valign="top"><table width="100%" border="0" cellpadding="0" cellspacing="0">
+                             <tr>
+                              <td class="footer" valign="top" align="left" style="font-size:11px; color:#919191; font-family:Verdana, Geneva, sans-serif; padding-top:12px; padding-bottom:0px; line-height:1.2em; mso-line-height-alt:0.6em;">&copy;&nbsp;2016 H-D ou ses filiales.  
+                              <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">H-D,</span> 
+                              <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">H-D1,</span> 
+                              Harley, 
+                              <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">Harley-Davidson,</span> 
+                              Screamin&rsquo;&nbsp;Eagle, MotorClothes et le Bar&nbsp;&amp;&nbsp;Shield font partie des marques de commerce de  
+                              <span style="white-space:nowrap; line-height:1.2em; mso-line-height-alt:0.6em;">H-D&nbsp;U.S.A.,&nbsp;LLC.</span></td>
+                            </tr>
+                          </table></td>
+                        </tr>                        
+                        <!-- Footer - Legal - End -->
+                       </table></td>
+                    </tr>
+                  </table></td>
+                  <td class="mobile-padding" width="30" valign="bottom" style="padding-bottom:0px;"><img src="http://image.m.harley-davidson.ca/lib/fe9013727267067870/m/1/spacer-15-5828-05-03-2016.gif" width="30" height="1" alt="" style="display:block" border="0" /></td>
+                </tr>
+              </table></td>
+            </tr>
+          </table></td>
+      </tr>
+    </table></td>
+  </tr>
+  <!-- Footer - Harley-Davidson - End -->
+  %%[ ENDIF ]%%
+</table>
+<!-- Exact Target Tracking Code - Start -->
+<custom name="opencounter" type="tracking">
+<!-- Exact Target Tracking Code - End --> 
+</body>
+</html>
